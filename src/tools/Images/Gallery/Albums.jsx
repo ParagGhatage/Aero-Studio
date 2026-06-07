@@ -91,9 +91,11 @@ export default function Albums({ onSelectAlbum }) {
               key={album.id} 
               className={`album-card ${isSelected ? 'selected' : ''}`}
               onClick={() => {
-                if (selectedAlbums.size > 0) toggleSelect(album.id, { stopPropagation: () => {} });
-                else onSelectAlbum(album.name);
-              }}
+  if (selectedAlbums.size > 0) toggleSelect(album.id, { stopPropagation: () => {} });
+}}
+onDoubleClick={() => {
+  if (selectedAlbums.size === 0) onSelectAlbum(album.name);
+}}
               onMouseEnter={() => setHoveredId(album.id)}
               onMouseLeave={() => setHoveredId(null)}
               style={{ borderColor: isSelected ? '#FF5F1F' : '' }}

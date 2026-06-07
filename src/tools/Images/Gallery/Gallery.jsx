@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { useNavigate, useLocation, useParams, useSearchParams } from 'react-router-dom';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { db } from '../../../db';
@@ -23,18 +23,47 @@ export default function Gallery() {
   const navigate = useNavigate();
   const location = useLocation();
   const params = useParams();
-  
+
   // --- URL-DRIVEN VIEWER STATE ---
   const [searchParams, setSearchParams] = useSearchParams();
   const viewId = searchParams.get('v');
+
+  const [infoImage, setInfoImage] = useState(null);
+  const [infoDimensions, setInfoDimensions] = useState(null);
+  const clickTimerRef = useRef(null);
+
+  // Cleanup click timer on unmount
+  useEffect(() => {
+    return () => {
+      if (clickTimerRef.current) clearTimeout(clickTimerRef.current);
+    };
+  }, []);
+
+  // Resolve image dimensions whenever infoImage changes
+  useEffect(() => {
+    if (!infoImage?.fileBlob) return;
+
+    const url = URL.createObjectURL(infoImage.fileBlob);
+    const img = new Image();
+    img.onload = () => {
+      setInfoDimensions({ width: img.naturalWidth, height: img.naturalHeight });
+      URL.revokeObjectURL(url);
+    };
+    img.onerror = () => URL.revokeObjectURL(url);
+    img.src = url;
+
+    return () => {
+      setInfoDimensions(null);
+    };
+  }, [infoImage]);
 
   // --- URL-DRIVEN TAB STATE ---
   const splat = params['*'] || '';
   const pathSegments = splat.split('/').filter(Boolean);
 
   const activeTab = pathSegments[0] === 'albums' ? 'albums' : 'photos';
-  const currentAlbum = pathSegments[0] === 'albums' && pathSegments[1] 
-    ? decodeURIComponent(pathSegments[1]) 
+  const currentAlbum = pathSegments[0] === 'albums' && pathSegments[1]
+    ? decodeURIComponent(pathSegments[1])
     : null;
 
   let basePath = location.pathname;
@@ -80,7 +109,7 @@ export default function Gallery() {
       newImages.push({
         name: file.name,
         fileBlob: file,
-        album: targetAlbum, 
+        album: targetAlbum,
         orderIndex: Date.now() + i,
         createdAt: Date.now(),
       });
@@ -97,7 +126,7 @@ export default function Gallery() {
   };
 
   const isAllImagesSelected = displayedImages.length > 0 && selectedImages.size === displayedImages.length;
-  
+
   const toggleSelectAllImages = () => {
     if (isAllImagesSelected) {
       setSelectedImages(new Set());
@@ -149,6 +178,26 @@ export default function Gallery() {
     processFiles(e.dataTransfer.files, currentAlbum || 'Default');
   };
 
+  const handleImageClick = (img) => {
+    if (selectedImages.size > 0) {
+      toggleSelectImage(img.id, { stopPropagation: () => {} });
+      return;
+    }
+    if (clickTimerRef.current) {
+      // Second click within 250ms — treat as double-click, open viewer
+      clearTimeout(clickTimerRef.current);
+      clickTimerRef.current = null;
+      setInfoImage(null);
+      openViewer(img);
+    } else {
+      // First click — wait to see if a second click comes
+      clickTimerRef.current = setTimeout(() => {
+        clickTimerRef.current = null;
+        setInfoImage(prev => prev?.id === img.id ? null : img);
+      }, 250);
+    }
+  };
+
   const renderImageGridItem = (img) => {
     const isSelected = selectedImages.has(img.id);
     const showCheckbox = isSelected || hoveredId === img.id || selectedImages.size > 0;
@@ -157,15 +206,12 @@ export default function Gallery() {
       <div
         key={img.id}
         className={`gallery-grid-item ${isSelected ? 'selected' : ''}`}
-        onClick={() => {
-          if (selectedImages.size > 0) toggleSelectImage(img.id, { stopPropagation: () => {} });
-          else openViewer(img);
-        }}
+        onClick={() => handleImageClick(img)}
         onMouseEnter={() => setHoveredId(img.id)}
         onMouseLeave={() => setHoveredId(null)}
       >
         {showCheckbox && (
-          <div 
+          <div
             className={`checkbox-wrapper ${isSelected ? 'checked' : 'unchecked'}`}
             onClick={(e) => toggleSelectImage(img.id, e)}
           >
@@ -174,8 +220,7 @@ export default function Gallery() {
         )}
         <BlobImage blob={img.fileBlob} alt={img.name} className="gallery-item-img" />
         {!isSelected && <div className="gallery-item-name">{img.name}</div>}
-        
-        {/* Standardized Grid Delete Button */}
+
         {hoveredId === img.id && !isSelected && selectedImages.size === 0 && (
           <button className="grid-delete-btn" onClick={(e) => deleteSingleImage(img.id, e)}>✕</button>
         )}
@@ -187,14 +232,13 @@ export default function Gallery() {
     <div className="gallery-root" onDragOver={(e) => e.preventDefault()} onDrop={handleDrop}>
       <header className="gallery-header">
         <div className="gallery-header-left">
-          {/* Replaced text arrow with SVG and updated text */}
           <button className="gallery-back-btn" onClick={() => navigate('/images')}>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M19 12H5M12 19l-7-7 7-7"/>
             </svg>
             Image Studio
           </button>
-          
+
           <div className="gallery-heading">
             <div className="gallery-wordmark"><span className="gallery-wordmark-dot" /> Gallery</div>
             <div className="gallery-title">{activeTab === 'albums' ? 'Albums' : 'My Photos'}</div>
@@ -205,15 +249,15 @@ export default function Gallery() {
 
       {!currentAlbum && (
         <div className="gallery-tabs">
-          <button 
+          <button
             className={`gallery-tab ${activeTab === 'photos' ? 'active' : ''}`}
-            onClick={() => navigate(basePath)}
+            onClick={() => { setInfoImage(null); navigate(basePath); }}
           >
             My Photos
           </button>
-          <button 
+          <button
             className={`gallery-tab ${activeTab === 'albums' ? 'active' : ''}`}
-            onClick={() => navigate(`${basePath}/albums`)}
+            onClick={() => { setInfoImage(null); navigate(`${basePath}/albums`); }}
           >
             Albums
           </button>
@@ -230,8 +274,8 @@ export default function Gallery() {
       />
 
       {activeTab === 'albums' && !currentAlbum && (
-        <Albums 
-          onSelectAlbum={(albumName) => navigate(`${basePath}/albums/${encodeURIComponent(albumName)}`)} 
+        <Albums
+          onSelectAlbum={(albumName) => navigate(`${basePath}/albums/${encodeURIComponent(albumName)}`)}
         />
       )}
 
@@ -239,11 +283,11 @@ export default function Gallery() {
         <>
           <div className="album-detail-header">
             <div className="album-detail-title">
-              <button className="album-back-link" onClick={() => navigate(`${basePath}/albums`)}>← Albums</button>
+              <button className="album-back-link" onClick={() => { setInfoImage(null); navigate(`${basePath}/albums`); }}>← Albums</button>
               <span>/ {currentAlbum}</span>
             </div>
           </div>
-          
+
           {displayedImages.length > 0 && (
             <div className="grid-toolbar">
               <button className={`select-all-btn ${isAllImagesSelected ? 'active' : ''}`} onClick={toggleSelectAllImages}>
@@ -284,7 +328,7 @@ export default function Gallery() {
         </>
       )}
 
-      {/* Standardized Action Bar */}
+      {/* Action Bar */}
       {selectedImages.size > 0 && (
         <div className="action-bar">
           <button className="btn-icon-only" onClick={() => setSelectedImages(new Set())}>✕</button>
@@ -293,7 +337,7 @@ export default function Gallery() {
         </div>
       )}
 
-      {/* Standardized Viewer Overlay */}
+      {/* Viewer Overlay */}
       {viewingImage && (
         <div className="gallery-viewer-overlay">
           <div className="gallery-viewer-topbar">
@@ -315,6 +359,61 @@ export default function Gallery() {
           <div className="gallery-viewer-counter">
             {currentIndex + 1} / {displayedImages.length}
           </div>
+        </div>
+      )}
+
+      {/* Info Drawer */}
+      {infoImage && (
+        <div className="info-drawer">
+          <div className="info-drawer-header">
+            <span className="info-drawer-title">Image Info</span>
+            <button className="info-drawer-close" onClick={() => setInfoImage(null)}>✕</button>
+          </div>
+          <div className="info-drawer-thumb-wrap">
+            <BlobImage blob={infoImage.fileBlob} alt={infoImage.name} className="info-drawer-thumb" />
+          </div>
+          <div className="info-drawer-rows">
+            <div className="info-row">
+              <span className="info-label">Name</span>
+              <span className="info-value">{infoImage.name}</span>
+            </div>
+            <div className="info-row">
+              <span className="info-label">Album</span>
+              <span className="info-value">{infoImage.album || '—'}</span>
+            </div>
+            <div className="info-row">
+              <span className="info-label">Size</span>
+              <span className="info-value">
+                {infoImage.fileBlob ? `${(infoImage.fileBlob.size / 1024).toFixed(1)} KB` : '—'}
+              </span>
+            </div>
+            <div className="info-row">
+              <span className="info-label">Dimensions</span>
+              <span className="info-value">
+                {infoDimensions ? `${infoDimensions.width} × ${infoDimensions.height}` : '—'}
+              </span>
+            </div>
+            <div className="info-row">
+              <span className="info-label">Type</span>
+              <span className="info-value">{infoImage.fileBlob?.type || '—'}</span>
+            </div>
+            <div className="info-row">
+              <span className="info-label">Added</span>
+              <span className="info-value">
+                {infoImage.createdAt
+                  ? new Date(infoImage.createdAt).toLocaleDateString(undefined, {
+                      year: 'numeric', month: 'short', day: 'numeric',
+                    })
+                  : '—'}
+              </span>
+            </div>
+          </div>
+          <button
+            className="info-drawer-open-btn"
+            onClick={() => { openViewer(infoImage); setInfoImage(null); }}
+          >
+            Open in Viewer
+          </button>
         </div>
       )}
     </div>
