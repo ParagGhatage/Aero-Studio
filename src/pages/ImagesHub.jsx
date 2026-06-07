@@ -17,6 +17,19 @@ const TOOLS = [
     ),
   },
   {
+    id: 'crop',
+    name: 'Crop',
+    description: 'Crop, rotate, and export images with a lightweight local editor.',
+    status: 'ready',
+    icon: (
+      <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+        <rect x="4" y="4" width="20" height="20" rx="3" stroke="currentColor" strokeWidth="1.4"/>
+        <path d="M8 8h12v12" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/>
+        <path d="M12 16l4-4m0 0v4m0-4h-4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+      </svg>
+    ),
+  },
+  {
     id: 'slideshow',
     name: 'Slideshow',
     description: 'Present your images in a timed, full-screen slideshow with transition effects and looping.',
@@ -225,7 +238,7 @@ export default function ImagesHub() {
             borderColor: backHovered ? '#444' : '#2A2A2A',
           }}
           // 4. Update back navigation
-          onClick={() => navigate(-1)}
+            onClick={() => navigate('/')}
           onMouseEnter={() => setBackHovered(true)}
           onMouseLeave={() => setBackHovered(false)}
         >

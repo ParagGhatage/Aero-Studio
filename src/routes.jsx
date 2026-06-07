@@ -4,6 +4,7 @@ import ImagesHub from './pages/ImagesHub';
 import PDFHub from './pages/PDFHub';
 import VideosHub from './pages/VideoHub';
 import Gallery from './tools/Images/Gallery/Gallery';
+import Crop from './tools/Images/Crop/Crop';
 
 /**
  * TOOL REGISTRY — Add new tools here
@@ -14,6 +15,7 @@ export const toolRegistry = {
     hub: 'ImagesHub',
     tools: {
       gallery: { component: Gallery, name: 'Gallery' },
+      crop: { component: Crop, name: 'Crop' },
       // slideshow: { component: Slideshow, name: 'Slideshow' },
       // metadata: { component: Metadata, name: 'Metadata Reader' },
     },
