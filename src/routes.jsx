@@ -1,8 +1,8 @@
 import { createBrowserRouter } from 'react-router-dom';
 import Landing from './pages/Landing';
-import ImagesHub from './pages/ImagesHub';
-import PDFHub from './pages/PDFHub';
-import VideosHub from './pages/VideoHub';
+import ImagesHub from './pages/ImageStudio';
+import PDFHub from './pages/PDFStudio';
+import VideosHub from './pages/VideoLab';
 import Gallery from './tools/Images/Gallery/Gallery';
 import Crop from './tools/Images/Crop/Crop';
 

@@ -18,7 +18,7 @@ const TOOLS = [
   },
   {
     id: 'crop',
-    name: 'Crop',
+    name: 'Crop & Rotate',
     description: 'Crop, rotate, and export images with a lightweight local editor.',
     status: 'ready',
     icon: (
@@ -29,20 +29,7 @@ const TOOLS = [
       </svg>
     ),
   },
-  {
-    id: 'slideshow',
-    name: 'Slideshow',
-    description: 'Present your images in a timed, full-screen slideshow with transition effects and looping.',
-    status: 'soon',
-    icon: (
-      <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
-        <rect x="3" y="5" width="22" height="16" rx="2" stroke="currentColor" strokeWidth="1.4"/>
-        <line x1="9" y1="24" x2="19" y2="24" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/>
-        <line x1="14" y1="21" x2="14" y2="24" stroke="currentColor" strokeWidth="1.4"/>
-        <path d="M11 13 L17 10 L17 16 Z" stroke="currentColor" strokeWidth="1.4" strokeLinejoin="round"/>
-      </svg>
-    ),
-  },
+  
   {
     id: 'metadata',
     name: 'Metadata Reader',
