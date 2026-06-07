@@ -425,3 +425,170 @@
   background: #FF5F1F;
   color: #FFF;
 }
+
+/* --- UNIVERSAL SELECTION & ACTION BAR --- */
+.checkbox-wrapper {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  z-index: 10;
+  width: 22px;
+  height: 22px;
+  border-radius: 4px;
+  border: 2px solid rgba(255, 255, 255, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.checkbox-wrapper.checked {
+  background: #FF5F1F;
+  border-color: #FF5F1F;
+}
+
+.checkbox-wrapper.unchecked {
+  background: rgba(0, 0, 0, 0.4);
+}
+
+.checkbox-wrapper:hover {
+  transform: scale(1.1);
+}
+
+.check-icon {
+  color: #FFF;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.action-bar {
+  position: fixed;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #1F1F1F;
+  border: 1px solid #333;
+  border-radius: 30px;
+  padding: 12px 24px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  z-index: 100;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+}
+
+.action-bar-text {
+  color: #F5F0EB;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.action-bar-btn {
+  background: #E24B4A;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  transition: background 0.2s;
+}
+
+.action-bar-btn:hover {
+  background: #ff4d4f;
+}
+
+.action-bar-cancel {
+  background: none;
+  border: none;
+  color: #888;
+  cursor: pointer;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* --- ADD MEDIA GRID CARD --- */
+.add-media-card {
+  background: rgba(255, 95, 31, 0.05);
+  border: 1px dashed #555;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #FF5F1F;
+  aspect-ratio: 1/1;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.add-media-card:hover {
+  background: rgba(255, 95, 31, 0.1);
+  border-color: #FF5F1F;
+}
+
+.add-media-icon {
+  font-size: 32px;
+  margin-bottom: 8px;
+  line-height: 1;
+}
+
+.add-media-text {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+/* Adjusted Album specific overrides */
+.album-card {
+  position: relative; /* Needed for absolute positioning of checkbox */
+}
+
+/* --- GRID TOOLBAR (SELECT ALL) --- */
+.grid-toolbar {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  margin-bottom: 1rem;
+  padding: 0 0.5rem;
+}
+
+.select-all-btn {
+  background: transparent;
+  border: 1px solid #333;
+  color: #F5F0EB;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 13px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s;
+}
+
+.select-all-btn:hover {
+  background: #1F1F1F;
+  border-color: #555;
+}
+
+.select-all-checkbox {
+  width: 14px;
+  height: 14px;
+  border: 1px solid #888;
+  border-radius: 3px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  transition: all 0.2s;
+}
+
+.select-all-btn.active .select-all-checkbox {
+  background: #FF5F1F;
+  border-color: #FF5F1F;
+  color: white;
+}
