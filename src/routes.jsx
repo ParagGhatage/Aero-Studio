@@ -1,4 +1,3 @@
-
 import { createBrowserRouter } from 'react-router-dom';
 import Landing from './pages/Landing';
 import ImagesHub from './pages/ImagesHub';
@@ -45,7 +44,8 @@ const generateToolRoutes = () => {
   Object.entries(toolRegistry).forEach(([category, config]) => {
     Object.entries(config.tools).forEach(([toolId, toolConfig]) => {
       routes.push({
-        path: `/${category}/${toolId}`,
+        // Add /* so tools can manage their own internal tabs/sub-routes
+        path: `/${category}/${toolId}/*`,
         element: <toolConfig.component />,
       });
     });

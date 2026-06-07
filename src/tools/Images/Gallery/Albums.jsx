@@ -30,14 +30,23 @@ export default function Albums({ onSelectAlbum }) {
     setSelectedAlbums(next);
   };
 
-  // --- NEW: Select All Logic ---
   const isAllSelected = albums.length > 0 && selectedAlbums.size === albums.length;
   
   const toggleSelectAll = () => {
     if (isAllSelected) {
-      setSelectedAlbums(new Set()); // Deselect all
+      setSelectedAlbums(new Set());
     } else {
-      setSelectedAlbums(new Set(albums.map(a => a.id))); // Select all
+      setSelectedAlbums(new Set(albums.map(a => a.id)));
+    }
+  };
+
+  // Safe individual delete handler
+  const deleteSingleAlbum = async (album, e) => {
+    e.stopPropagation();
+    if (window.confirm(`Delete "${album.name}"? Photos will be returned to "My Photos".`)) {
+      // Unassign images, then delete the album
+      await db.images.where('album').equals(album.name).modify({ album: 'Default' });
+      await db.albums.delete(album.id);
     }
   };
 
@@ -103,6 +112,16 @@ export default function Albums({ onSelectAlbum }) {
               <div className="album-count">
                 {imageCount} image{imageCount !== 1 ? 's' : ''}
               </div>
+
+              {/* Standardized Individual Hover Delete Button */}
+              {hoveredId === album.id && !isSelected && selectedAlbums.size === 0 && (
+                <button 
+                  className="grid-delete-btn" 
+                  onClick={(e) => deleteSingleAlbum(album, e)}
+                >
+                  ✕
+                </button>
+              )}
             </div>
           );
         })}
@@ -110,9 +129,11 @@ export default function Albums({ onSelectAlbum }) {
 
       {selectedAlbums.size > 0 && (
         <div className="action-bar">
-          <button className="action-bar-cancel" onClick={() => setSelectedAlbums(new Set())}>✕</button>
+          {/* Swapped to standard btn-icon-only */}
+          <button className="btn-icon-only" onClick={() => setSelectedAlbums(new Set())}>✕</button>
           <span className="action-bar-text">{selectedAlbums.size} selected</span>
-          <button className="action-bar-btn" onClick={deleteSelectedAlbums}>Delete Albums</button>
+          {/* Swapped to standard btn-danger */}
+          <button className="btn-danger" onClick={deleteSelectedAlbums}>Delete Albums</button>
         </div>
       )}
     </>

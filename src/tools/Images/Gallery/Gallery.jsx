@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation, useParams, useSearchParams } from 'react-router-dom';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { db } from '../../../db';
 import Albums from './Albums';
@@ -21,16 +21,56 @@ const BlobImage = ({ blob, alt, className }) => {
 
 export default function Gallery() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const params = useParams();
   
-  const [activeTab, setActiveTab] = useState('photos');
-  const [currentAlbum, setCurrentAlbum] = useState(null);
-  const [viewingImage, setViewingImage] = useState(null);
-  
+  // --- URL-DRIVEN VIEWER STATE ---
+  const [searchParams, setSearchParams] = useSearchParams();
+  const viewId = searchParams.get('v');
+
+  // --- URL-DRIVEN TAB STATE ---
+  const splat = params['*'] || '';
+  const pathSegments = splat.split('/').filter(Boolean);
+
+  const activeTab = pathSegments[0] === 'albums' ? 'albums' : 'photos';
+  const currentAlbum = pathSegments[0] === 'albums' && pathSegments[1] 
+    ? decodeURIComponent(pathSegments[1]) 
+    : null;
+
+  let basePath = location.pathname;
+  if (splat) basePath = location.pathname.slice(0, -(splat.length + 1));
+  basePath = basePath.replace(/\/$/, '');
+
+  // --- STANDARD STATE ---
   const [hoveredId, setHoveredId] = useState(null);
   const [selectedImages, setSelectedImages] = useState(new Set());
+  const [prevPath, setPrevPath] = useState(location.pathname);
+
+  if (location.pathname !== prevPath) {
+    setPrevPath(location.pathname);
+    setSelectedImages(new Set());
+  }
 
   const allImages = useLiveQuery(() => db.images.orderBy('createdAt').reverse().toArray()) || [];
   const displayedImages = currentAlbum ? allImages.filter(img => img.album === currentAlbum) : allImages;
+
+  // --- DERIVE VIEWING IMAGE FROM URL ---
+  const viewingImage = viewId ? allImages.find(img => img.id.toString() === viewId) : null;
+
+  // --- VIEWER NAVIGATION HELPERS ---
+  const openViewer = (img) => {
+    setSearchParams(prev => {
+      prev.set('v', img.id);
+      return prev;
+    });
+  };
+
+  const closeViewer = () => {
+    setSearchParams(prev => {
+      prev.delete('v');
+      return prev;
+    });
+  };
 
   const processFiles = async (files, targetAlbum = 'Default') => {
     const newImages = [];
@@ -56,7 +96,6 @@ export default function Gallery() {
     setSelectedImages(next);
   };
 
-  // --- NEW: Select All Images Logic ---
   const isAllImagesSelected = displayedImages.length > 0 && selectedImages.size === displayedImages.length;
   
   const toggleSelectAllImages = () => {
@@ -77,14 +116,7 @@ export default function Gallery() {
   const deleteSingleImage = async (id, e) => {
     e.stopPropagation();
     await db.images.delete(id);
-    if (viewingImage && viewingImage.id === id) setViewingImage(null);
-  };
-
-  const clearGallery = async () => {
-    if (window.confirm('Delete all images from the gallery?')) {
-      await db.images.clear();
-      setViewingImage(null);
-    }
+    if (viewingImage && viewingImage.id === id) closeViewer();
   };
 
   const currentIndex = viewingImage ? displayedImages.findIndex(img => img.id === viewingImage.id) : -1;
@@ -93,12 +125,12 @@ export default function Gallery() {
 
   const showPrev = useCallback((e) => {
     if (e) e.stopPropagation();
-    if (hasPrev) setViewingImage(displayedImages[currentIndex - 1]);
+    if (hasPrev) openViewer(displayedImages[currentIndex - 1]);
   }, [hasPrev, displayedImages, currentIndex]);
 
   const showNext = useCallback((e) => {
     if (e) e.stopPropagation();
-    if (hasNext) setViewingImage(displayedImages[currentIndex + 1]);
+    if (hasNext) openViewer(displayedImages[currentIndex + 1]);
   }, [hasNext, displayedImages, currentIndex]);
 
   useEffect(() => {
@@ -106,7 +138,7 @@ export default function Gallery() {
       if (!viewingImage) return;
       if (e.key === 'ArrowRight') showNext();
       if (e.key === 'ArrowLeft') showPrev();
-      if (e.key === 'Escape') setViewingImage(null);
+      if (e.key === 'Escape') closeViewer();
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
@@ -116,6 +148,7 @@ export default function Gallery() {
     e.preventDefault();
     processFiles(e.dataTransfer.files, currentAlbum || 'Default');
   };
+
   const renderImageGridItem = (img) => {
     const isSelected = selectedImages.has(img.id);
     const showCheckbox = isSelected || hoveredId === img.id || selectedImages.size > 0;
@@ -127,7 +160,7 @@ export default function Gallery() {
         style={{ borderColor: isSelected ? '#FF5F1F' : '', transform: isSelected ? 'scale(0.96)' : '' }}
         onClick={() => {
           if (selectedImages.size > 0) toggleSelectImage(img.id, { stopPropagation: () => {} });
-          else setViewingImage(img);
+          else openViewer(img);
         }}
         onMouseEnter={() => setHoveredId(img.id)}
         onMouseLeave={() => setHoveredId(null)}
@@ -142,6 +175,11 @@ export default function Gallery() {
         )}
         <BlobImage blob={img.fileBlob} alt={img.name} className="gallery-item-img" />
         {!isSelected && <div className="gallery-item-name">{img.name}</div>}
+        
+        {/* Standardized Grid Delete Button */}
+        {hoveredId === img.id && !isSelected && selectedImages.size === 0 && (
+          <button className="grid-delete-btn" onClick={(e) => deleteSingleImage(img.id, e)}>✕</button>
+        )}
       </div>
     );
   };
@@ -150,29 +188,26 @@ export default function Gallery() {
     <div className="gallery-root" onDragOver={(e) => e.preventDefault()} onDrop={handleDrop}>
       <header className="gallery-header">
         <div className="gallery-header-left">
-          <button className="gallery-back-btn" onClick={() => navigate(-1)}>← Images</button>
+          <button className="gallery-back-btn" onClick={() => navigate('/images')}>← Images</button>
           <div>
             <div className="gallery-wordmark"><span className="gallery-wordmark-dot" /> Gallery</div>
             <div className="gallery-title">{activeTab === 'albums' ? 'Albums' : 'My Photos'}</div>
             <div className="gallery-count">{allImages.length} image{allImages.length !== 1 ? 's' : ''} stored locally</div>
           </div>
         </div>
-        {allImages.length > 0 && !currentAlbum && activeTab === 'photos' && (
-          <button className="gallery-clear-btn" onClick={clearGallery}>✕ Clear all</button>
-        )}
       </header>
 
       {!currentAlbum && (
         <div className="gallery-tabs">
           <button 
             className={`gallery-tab ${activeTab === 'photos' ? 'active' : ''}`}
-            onClick={() => { setActiveTab('photos'); setSelectedImages(new Set()); }}
+            onClick={() => navigate(basePath)}
           >
             My Photos
           </button>
           <button 
             className={`gallery-tab ${activeTab === 'albums' ? 'active' : ''}`}
-            onClick={() => { setActiveTab('albums'); setSelectedImages(new Set()); }}
+            onClick={() => navigate(`${basePath}/albums`)}
           >
             Albums
           </button>
@@ -189,19 +224,20 @@ export default function Gallery() {
       />
 
       {activeTab === 'albums' && !currentAlbum && (
-        <Albums onSelectAlbum={(albumName) => setCurrentAlbum(albumName)} />
+        <Albums 
+          onSelectAlbum={(albumName) => navigate(`${basePath}/albums/${encodeURIComponent(albumName)}`)} 
+        />
       )}
 
       {currentAlbum && (
         <>
           <div className="album-detail-header">
             <div className="album-detail-title">
-              <button className="album-back-link" onClick={() => { setCurrentAlbum(null); setSelectedImages(new Set()); }}>← Albums</button>
+              <button className="album-back-link" onClick={() => navigate(`${basePath}/albums`)}>← Albums</button>
               <span>/ {currentAlbum}</span>
             </div>
           </div>
           
-          {/* Select All Toolbar for Album Detail */}
           {displayedImages.length > 0 && (
             <div className="grid-toolbar">
               <button className={`select-all-btn ${isAllImagesSelected ? 'active' : ''}`} onClick={toggleSelectAllImages}>
@@ -223,7 +259,6 @@ export default function Gallery() {
 
       {activeTab === 'photos' && !currentAlbum && (
         <>
-          {/* Select All Toolbar for Main Photos */}
           {allImages.length > 0 && (
             <div className="grid-toolbar">
               <button className={`select-all-btn ${isAllImagesSelected ? 'active' : ''}`} onClick={toggleSelectAllImages}>
@@ -243,21 +278,27 @@ export default function Gallery() {
         </>
       )}
 
+      {/* Standardized Action Bar */}
       {selectedImages.size > 0 && (
         <div className="action-bar">
-          <button className="action-bar-cancel" onClick={() => setSelectedImages(new Set())}>✕</button>
+          <button className="btn-icon-only" onClick={() => setSelectedImages(new Set())}>✕</button>
           <span className="action-bar-text">{selectedImages.size} selected</span>
-          <button className="action-bar-btn" onClick={deleteSelectedImages}>Delete</button>
+          <button className="btn-danger" onClick={deleteSelectedImages}>Delete</button>
         </div>
       )}
 
+      {/* Standardized Viewer Overlay */}
       {viewingImage && (
         <div className="gallery-viewer-overlay">
           <div className="gallery-viewer-topbar">
             <div className="gallery-viewer-filename">{viewingImage.name}</div>
             <div className="gallery-viewer-actions">
-              <button className="gallery-viewer-btn-danger" onClick={(e) => deleteSingleImage(viewingImage.id, e)}>✕ Delete</button>
-              <button className="gallery-viewer-btn" onClick={() => setViewingImage(null)}>✕ Close</button>
+              <button className="btn-danger" onClick={(e) => deleteSingleImage(viewingImage.id, e)}>
+                ✕ Delete
+              </button>
+              <button className="btn-secondary" onClick={closeViewer}>
+                ✕ Close
+              </button>
             </div>
           </div>
 

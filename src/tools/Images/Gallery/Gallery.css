@@ -71,15 +71,7 @@
   margin-top: 5px;
 }
 
-.gallery-clear-btn {
-  background: transparent;
-  color: #E24B4A;
-  border: 0.5px solid rgba(226, 75, 74, 0.4);
-  padding: 7px 16px;
-  border-radius: 8px;
-  font-size: 13px;
-  cursor: pointer;
-}
+
 
 .gallery-dropzone {
   border: 1px dashed #555;
@@ -156,22 +148,7 @@
   background: linear-gradient(to top, rgba(0, 0, 0, 0.6), transparent);
 }
 
-.gallery-delete-btn {
-  position: absolute;
-  top: 7px;
-  right: 7px;
-  background: rgba(13, 13, 13, 0.85);
-  color: #E24B4A;
-  border: 0.5px solid rgba(226, 75, 74, 0.35);
-  border-radius: 8px;
-  width: 30px;
-  height: 30px;
-  font-size: 14px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
+
 
 .gallery-empty-state {
   text-align: center;
@@ -217,31 +194,9 @@
   align-items: center;
 }
 
-.gallery-viewer-btn {
-  background: #1F1F1F;
-  color: #F5F0EB;
-  border: 0.5px solid #2A2A2A;
-  padding: 7px 14px;
-  border-radius: 8px;
-  font-size: 12px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
 
-.gallery-viewer-btn-danger {
-  background: #1F1F1F;
-  color: #E24B4A;
-  border: 0.5px solid rgba(226, 75, 74, 0.35);
-  padding: 7px 14px;
-  border-radius: 8px;
-  font-size: 12px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
+
+
 
 .gallery-viewer-img {
   max-width: 82%;
@@ -484,32 +439,93 @@
   font-weight: 500;
 }
 
-.action-bar-btn {
+
+/* --- STANDARDIZED BUTTONS --- */
+.btn-danger {
   background: #E24B4A;
-  color: white;
-  border: none;
+  color: #FFF;
+  border: 1px solid #E24B4A;
   padding: 8px 16px;
-  border-radius: 20px;
-  cursor: pointer;
+  border-radius: 8px;
   font-size: 13px;
   font-weight: 500;
-  transition: background 0.2s;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s;
+}
+
+.btn-danger:hover {
+  background: #ff4d4f;
+  border-color: #ff4d4f;
+}
+
+.btn-secondary {
+  background: #1F1F1F;
+  color: #F5F0EB;
+  border: 1px solid #333;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s;
+}
+
+.btn-secondary:hover {
+  background: #2A2A2A;
+  border-color: #444;
+}
+
+.btn-icon-only {
+  background: transparent;
+  color: #888;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  transition: color 0.2s;
+}
+
+.btn-icon-only:hover {
+  color: #F5F0EB;
+}
+
+.grid-delete-btn {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  background: rgba(13, 13, 13, 0.85);
+  color: #E24B4A;
+  border: 1px solid rgba(226, 75, 74, 0.35);
+  border-radius: 6px;
+  width: 28px;
+  height: 28px;
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  z-index: 10;
+}
+
+.grid-delete-btn:hover {
+  background: #E24B4A;
+  color: #FFF;
 }
 
 .action-bar-btn:hover {
   background: #ff4d4f;
 }
 
-.action-bar-cancel {
-  background: none;
-  border: none;
-  color: #888;
-  cursor: pointer;
-  font-size: 16px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
 
 /* --- ADD MEDIA GRID CARD --- */
 .add-media-card {
