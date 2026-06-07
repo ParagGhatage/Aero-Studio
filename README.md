@@ -11,15 +11,20 @@ Tools for organizing, managing, and editing your photo library locally.
 
 * **Media Gallery & Albums**
   Manage your entire photo collection with a database-backed grid, album categorization, and batch operations.
-  <img width="1888" height="910" alt="photos" src="https://github.com/user-attachments/assets/01cac91c-ebc4-4bbc-98a8-d1ce0679edd2" />
-  <img width="1885" height="915" alt="Albums" src="https://github.com/user-attachments/assets/2b7b5545-a995-4312-8d04-94e10f965155" />
+ <img width="1495" height="908" alt="with side panel" src="https://github.com/user-attachments/assets/d9dab30f-7179-449e-bb65-d392e28767a8" />
+
+ <img width="1119" height="907" alt="albums" src="https://github.com/user-attachments/assets/a2b3eec4-cabb-40b6-a281-e7b31baad570" />
+
 
 
   
 
+
+
 * **Crop & Transform**
   Perform precise geometric edits including rotation and flipping, cropping using native canvas processing.
-  <img width="1872" height="911" alt="Crop" src="https://github.com/user-attachments/assets/3c7ea3ce-082c-464b-bce5-9e008088aed4" />
+  <img width="843" height="892" alt="crop and rotate" src="https://github.com/user-attachments/assets/55784d2f-359d-412a-a975-270da97d48fe" />
+
 
 
 
