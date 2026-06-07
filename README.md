@@ -1,18 +1,48 @@
-# React + Vite
+# Aero Studio
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A local-first, privacy-focused workspace for managing and transforming your media files directly in the browser. 100% offline-capable via PWA. No uploads, no servers—just your browser and your data.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+### Core Features
 
-## React Compiler
+#### 1. Image Studio
+Tools for organizing, managing, and editing your photo library locally.
 
-The React Compiler is enabled on this template. See [this documentation](https://react.dev/learn/react-compiler) for more information.
+* **Media Gallery & Albums**
+  Manage your entire photo collection with a database-backed grid, album categorization, and batch operations.
+  <img width="1888" height="910" alt="photos" src="https://github.com/user-attachments/assets/01cac91c-ebc4-4bbc-98a8-d1ce0679edd2" />
+  <img width="1885" height="915" alt="Albums" src="https://github.com/user-attachments/assets/2b7b5545-a995-4312-8d04-94e10f965155" />
 
-Note: This will impact Vite dev & build performances.
 
-## Expanding the ESLint configuration
+  
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+* **Crop & Transform**
+  Perform precise geometric edits including rotation and flipping, cropping using native canvas processing.
+  <img width="1872" height="911" alt="Crop" src="https://github.com/user-attachments/assets/3c7ea3ce-082c-464b-bce5-9e008088aed4" />
+
+
+
+#### 2. Document Suite (Coming Soon)
+* **PDF Studio**
+  Local-first tools for viewing, merging, and splitting PDF documents without third-party services.
+
+#### 3. Video Lab (Coming Soon)
+* **Video Studio**
+  Local video management and frame-capture utilities.
+
+---
+
+### Why Offline-First?
+Aero Studio is built as a **Progressive Web App (PWA)**. Once you load the site once, it installs to your device and functions entirely without an internet connection. Your media never leaves your hardware, providing true data sovereignty.
+
+### Tech Stack
+* **React + Vite:** Modern, reactive UI architecture.
+* **Dexie.js:** High-performance local IndexedDB storage.
+* **HTML5 Canvas:** Hardware-accelerated client-side image processing.
+* **React Router:** URL-driven state management for deep-linking.
+
+---
+
+### Privacy Commitment
+Your data is yours. Since all processing occurs within your browser's sandboxed environment, your files are never transmitted to a server.
