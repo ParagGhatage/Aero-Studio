@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Crop.css';
 
-const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
+
 const normalizeRotation = (value) => ((value % 360) + 360) % 360;
 const initialCropRect = (width, height) => {
   const baseWidth = Math.round(width * 0.75);
@@ -128,6 +128,21 @@ export default function Crop() {
           next.width = start.width + dx;
           next.height = start.height + dy;
           break;
+
+        case 'n':
+            next.y = start.y + dy;
+            next.height = start.height - dy;
+            break;
+        case 's':
+            next.height = start.height + dy;
+            break;
+        case 'e':
+            next.width = start.width + dx;
+            break;
+        case 'w':
+            next.x = start.x + dx;
+            next.width = start.width - dx;
+            break;
         default:
           break;
       }
@@ -228,10 +243,7 @@ export default function Crop() {
     height: `${(cropRect.height / dimensions.height) * 100}%`,
   };
 
-  const previewBoxStyle = dimensions.width && dimensions.height
-    ? { aspectRatio: `${dimensions.width}/${dimensions.height}` }
-    : undefined;
-
+  
   return (
     <div className="crop-root">
       <header className="crop-header">
@@ -341,7 +353,7 @@ export default function Crop() {
                 </button>
               )}
             </div>
-            <div className="crop-preview-box" style={previewBoxStyle}>
+            <div className="crop-preview-box">
               {!imageUrl && <div className="crop-empty-state">Add an image to begin cropping.</div>}
               {imageUrl && (
                 <div
@@ -356,12 +368,18 @@ export default function Crop() {
                     style={previewStyle}
                     draggable={false}
                   />
-                  <div className="crop-overlay" style={overlayStyle}>
-                    <div className="crop-handle nw" onPointerDown={(event) => { event.stopPropagation(); beginDrag('nw', event); }} />
-                    <div className="crop-handle ne" onPointerDown={(event) => { event.stopPropagation(); beginDrag('ne', event); }} />
-                    <div className="crop-handle sw" onPointerDown={(event) => { event.stopPropagation(); beginDrag('sw', event); }} />
-                    <div className="crop-handle se" onPointerDown={(event) => { event.stopPropagation(); beginDrag('se', event); }} />
-                  </div>
+                  <div className="crop-overlay" style={overlayStyle}
+                    onPointerDown={(event) => { event.stopPropagation(); beginDrag('move', event); }}
+                    >
+                    <div className="crop-handle nw" onPointerDown={(e) => { e.stopPropagation(); beginDrag('nw', e); }} />
+                    <div className="crop-handle ne" onPointerDown={(e) => { e.stopPropagation(); beginDrag('ne', e); }} />
+                    <div className="crop-handle sw" onPointerDown={(e) => { e.stopPropagation(); beginDrag('sw', e); }} />
+                    <div className="crop-handle se" onPointerDown={(e) => { e.stopPropagation(); beginDrag('se', e); }} />
+                    <div className="crop-handle n"  onPointerDown={(e) => { e.stopPropagation(); beginDrag('n',  e); }} />
+                    <div className="crop-handle s"  onPointerDown={(e) => { e.stopPropagation(); beginDrag('s',  e); }} />
+                    <div className="crop-handle e"  onPointerDown={(e) => { e.stopPropagation(); beginDrag('e',  e); }} />
+                    <div className="crop-handle w"  onPointerDown={(e) => { e.stopPropagation(); beginDrag('w',  e); }} />
+                    </div>
                 </div>
               )}
             </div>
@@ -370,10 +388,12 @@ export default function Crop() {
           <div className="crop-preview-panel crop-output-panel">
             <div className="crop-panel-heading">Final Output</div>
             {resultUrl ? (
-              <img className="crop-output-img" src={resultUrl} alt="Crop result" />
-            ) : (
-              <div className="crop-empty-state">Click Crop to generate a result preview.</div>
-            )}
+  <div className="crop-output-letterbox">
+    <img className="crop-output-img" src={resultUrl} alt="Crop result" />
+  </div>
+) : (
+  <div className="crop-empty-state">Click Crop to generate a result preview.</div>
+)}
           </div>
         </main>
       </div>
@@ -393,12 +413,18 @@ export default function Crop() {
                 alt="Fullscreen source"
                 draggable={false}
               />
-              <div className="crop-overlay full" style={overlayStyle}>
-                <div className="crop-handle nw" onPointerDown={(event) => { event.stopPropagation(); beginDrag('nw', event); }} />
-                <div className="crop-handle ne" onPointerDown={(event) => { event.stopPropagation(); beginDrag('ne', event); }} />
-                <div className="crop-handle sw" onPointerDown={(event) => { event.stopPropagation(); beginDrag('sw', event); }} />
-                <div className="crop-handle se" onPointerDown={(event) => { event.stopPropagation(); beginDrag('se', event); }} />
-              </div>
+              <div className="crop-overlay full" style={overlayStyle}
+                onPointerDown={(event) => { event.stopPropagation(); beginDrag('move', event); }}
+                >
+                    <div className="crop-handle nw" onPointerDown={(e) => { e.stopPropagation(); beginDrag('nw', e); }} />
+                    <div className="crop-handle ne" onPointerDown={(e) => { e.stopPropagation(); beginDrag('ne', e); }} />
+                    <div className="crop-handle sw" onPointerDown={(e) => { e.stopPropagation(); beginDrag('sw', e); }} />
+                    <div className="crop-handle se" onPointerDown={(e) => { e.stopPropagation(); beginDrag('se', e); }} />
+                    <div className="crop-handle n"  onPointerDown={(e) => { e.stopPropagation(); beginDrag('n',  e); }} />
+                    <div className="crop-handle s"  onPointerDown={(e) => { e.stopPropagation(); beginDrag('s',  e); }} />
+                    <div className="crop-handle e"  onPointerDown={(e) => { e.stopPropagation(); beginDrag('e',  e); }} />
+                    <div className="crop-handle w"  onPointerDown={(e) => { e.stopPropagation(); beginDrag('w',  e); }} />
+                </div>
             </div>
           </div>
         </div>
