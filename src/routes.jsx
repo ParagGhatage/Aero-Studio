@@ -4,7 +4,7 @@ import Landing from './pages/Landing';
 import ImagesHub from './pages/ImagesHub';
 import PDFHub from './pages/PDFHub';
 import VideosHub from './pages/VideoHub';
-import Gallery from './tools/Gallery';
+import Gallery from './tools/Images/Gallery/Gallery';
 
 /**
  * TOOL REGISTRY — Add new tools here
