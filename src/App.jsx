@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { db } from './db';
 
@@ -14,7 +14,7 @@ const styles = {
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'flex-end',
-    marginBottom: '1.75rem',
+    marginBottom: '1.5rem',
     paddingBottom: '1.25rem',
     borderBottom: '0.5px solid #2A2A2A',
   },
@@ -55,6 +55,37 @@ const styles = {
     borderRadius: '8px',
     fontSize: '13px',
     cursor: 'pointer',
+  },
+  // -- New Album Nav Styles --
+  albumNav: {
+    display: 'flex',
+    gap: '10px',
+    marginBottom: '1.75rem',
+    overflowX: 'auto',
+    paddingBottom: '5px',
+    scrollbarWidth: 'none', // Firefox
+  },
+  albumTab: {
+    background: '#1F1F1F',
+    color: '#888',
+    border: '0.5px solid #2A2A2A',
+    padding: '6px 14px',
+    borderRadius: '20px',
+    fontSize: '12px',
+    cursor: 'pointer',
+    whiteSpace: 'nowrap',
+    transition: 'all 0.2s',
+  },
+  albumTabActive: {
+    background: 'rgba(255,95,31,0.1)',
+    color: '#FF5F1F',
+    border: '0.5px solid #FF5F1F',
+    padding: '6px 14px',
+    borderRadius: '20px',
+    fontSize: '12px',
+    cursor: 'pointer',
+    whiteSpace: 'nowrap',
+    transition: 'all 0.2s',
   },
   dropzone: {
     border: '1px dashed #555',
@@ -135,7 +166,6 @@ const styles = {
     color: '#555',
     fontSize: '14px',
   },
-  // Viewer
   viewerOverlay: {
     position: 'fixed',
     inset: 0,
@@ -159,7 +189,7 @@ const styles = {
     fontSize: '13px',
     color: '#888',
     letterSpacing: '0.03em',
-    maxWidth: '60%',
+    maxWidth: '40%',
     overflow: 'hidden',
     textOverflow: 'ellipsis',
     whiteSpace: 'nowrap',
@@ -167,6 +197,18 @@ const styles = {
   viewerActions: {
     display: 'flex',
     gap: '8px',
+    alignItems: 'center',
+  },
+  // -- New Album Select Style --
+  albumSelect: {
+    background: '#1F1F1F',
+    color: '#F5F0EB',
+    border: '0.5px solid #2A2A2A',
+    padding: '6px 12px',
+    borderRadius: '8px',
+    fontSize: '12px',
+    cursor: 'pointer',
+    outline: 'none',
   },
   viewerBtn: {
     background: '#1F1F1F',
@@ -227,18 +269,34 @@ export default function App() {
   const [viewingImage, setViewingImage] = useState(null);
   const [hoveredId, setHoveredId] = useState(null);
   const [dropzoneHovered, setDropzoneHovered] = useState(false);
+  const [activeAlbum, setActiveAlbum] = useState('All');
 
-  const images = useLiveQuery(() => db.images.orderBy('createdAt').reverse().toArray()) || [];
+  // Fetch all images
+  const allImages = useLiveQuery(() => db.images.orderBy('createdAt').reverse().toArray()) || [];
+
+  // Derive unique albums dynamically
+  const uniqueAlbums = useMemo(() => {
+    const albums = new Set(allImages.map(img => img.album || 'Default'));
+    return Array.from(albums).sort();
+  }, [allImages]);
+
+  // Filter images for the grid
+  const displayedImages = activeAlbum === 'All' 
+    ? allImages 
+    : allImages.filter(img => img.album === activeAlbum);
 
   const processFiles = async (files) => {
     const newImages = [];
+    // If uploading while "All" is selected, default to 'Default'. Otherwise, upload into the active album.
+    const targetAlbum = activeAlbum === 'All' ? 'Default' : activeAlbum;
+
     for (let i = 0; i < files.length; i++) {
       const file = files[i];
       if (!file.type.startsWith('image/')) continue;
       newImages.push({
         name: file.name,
         fileBlob: file,
-        album: 'Default',
+        album: targetAlbum,
         orderIndex: Date.now() + i,
         createdAt: Date.now(),
         previewUrl: URL.createObjectURL(file),
@@ -257,22 +315,38 @@ export default function App() {
     if (window.confirm('Delete all images from the gallery?')) {
       await db.images.clear();
       setViewingImage(null);
+      setActiveAlbum('All');
     }
   };
 
-  const currentIndex = viewingImage ? images.findIndex(img => img.id === viewingImage.id) : -1;
+  // Move image to a different album
+  const handleAlbumChange = async (e) => {
+    let newAlbum = e.target.value;
+    
+    if (newAlbum === '__NEW__') {
+      const promptedAlbum = window.prompt("Enter new album name:");
+      if (!promptedAlbum || promptedAlbum.trim() === "") return;
+      newAlbum = promptedAlbum.trim();
+    }
+
+    await db.images.update(viewingImage.id, { album: newAlbum });
+    setViewingImage({ ...viewingImage, album: newAlbum });
+  };
+
+  // Viewer Navigation (Restricted to currently displayed array)
+  const currentIndex = viewingImage ? displayedImages.findIndex(img => img.id === viewingImage.id) : -1;
   const hasPrev = currentIndex > 0;
-  const hasNext = currentIndex !== -1 && currentIndex < images.length - 1;
+  const hasNext = currentIndex !== -1 && currentIndex < displayedImages.length - 1;
 
   const showPrev = useCallback((e) => {
     if (e) e.stopPropagation();
-    if (hasPrev) setViewingImage(images[currentIndex - 1]);
-  }, [hasPrev, images, currentIndex]);
+    if (hasPrev) setViewingImage(displayedImages[currentIndex - 1]);
+  }, [hasPrev, displayedImages, currentIndex]);
 
   const showNext = useCallback((e) => {
     if (e) e.stopPropagation();
-    if (hasNext) setViewingImage(images[currentIndex + 1]);
-  }, [hasNext, images, currentIndex]);
+    if (hasNext) setViewingImage(displayedImages[currentIndex + 1]);
+  }, [hasNext, displayedImages, currentIndex]);
 
   useEffect(() => {
     const handleKeyDown = (e) => {
@@ -302,15 +376,36 @@ export default function App() {
           </div>
           <div style={styles.title}>Gallery</div>
           <div style={styles.count}>
-            {images.length} image{images.length !== 1 ? 's' : ''} stored locally
+            {allImages.length} image{allImages.length !== 1 ? 's' : ''} stored locally
           </div>
         </div>
-        {images.length > 0 && (
+        {allImages.length > 0 && (
           <button style={styles.clearBtn} onClick={clearGallery}>
             ✕ Clear all
           </button>
         )}
       </header>
+
+      {/* Album Navigation Tabs */}
+      {allImages.length > 0 && (
+        <div style={styles.albumNav}>
+          <button 
+            style={activeAlbum === 'All' ? styles.albumTabActive : styles.albumTab}
+            onClick={() => setActiveAlbum('All')}
+          >
+            All Images
+          </button>
+          {uniqueAlbums.map(album => (
+            <button 
+              key={album}
+              style={activeAlbum === album ? styles.albumTabActive : styles.albumTab}
+              onClick={() => setActiveAlbum(album)}
+            >
+              {album}
+            </button>
+          ))}
+        </div>
+      )}
 
       {/* Dropzone */}
       <div
@@ -326,7 +421,7 @@ export default function App() {
       >
         <div style={styles.dropzoneIcon}>↑</div>
         <div style={styles.dropzoneText}>
-          Drop images here or{' '}
+          {activeAlbum === 'All' ? 'Drop images here' : `Drop images to add to ${activeAlbum}`} or{' '}
           <span style={styles.dropzoneAccent}>click to browse</span>
         </div>
         <input
@@ -340,13 +435,13 @@ export default function App() {
       </div>
 
       {/* Grid */}
-      {images.length === 0 ? (
+      {displayedImages.length === 0 ? (
         <div style={styles.emptyState}>
-          No images yet. Upload some to get started.
+          {allImages.length === 0 ? 'No images yet. Upload some to get started.' : 'This album is empty.'}
         </div>
       ) : (
         <div style={styles.grid}>
-          {images.map((img) => (
+          {displayedImages.map((img) => (
             <div
               key={img.id}
               style={{
@@ -364,7 +459,7 @@ export default function App() {
                 <button
                   style={styles.deleteBtn}
                   onClick={(e) => deleteImage(img.id, e)}
-                  aria-label={`Delete ${img.name}`}
+                  title="Delete Image"
                 >
                   ✕
                 </button>
@@ -381,6 +476,20 @@ export default function App() {
           <div style={styles.viewerTopbar}>
             <div style={styles.viewerFilename}>{viewingImage.name}</div>
             <div style={styles.viewerActions}>
+              
+              {/* Album Reassignment Dropdown */}
+              <select 
+                value={viewingImage.album || 'Default'} 
+                onChange={handleAlbumChange}
+                style={styles.albumSelect}
+              >
+                {uniqueAlbums.map(album => (
+                  <option key={album} value={album}>📁 {album}</option>
+                ))}
+                <option disabled>──────────</option>
+                <option value="__NEW__">+ Create New Album...</option>
+              </select>
+
               <button
                 style={styles.viewerBtnDanger}
                 onClick={(e) => deleteImage(viewingImage.id, e)}
@@ -427,7 +536,7 @@ export default function App() {
 
           {/* Counter */}
           <div style={styles.viewerCounter}>
-            {currentIndex + 1} / {images.length}
+            {currentIndex + 1} / {displayedImages.length}
           </div>
         </div>
       )}
