@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom'; // 1. Import the hook
 
 const CATEGORIES = [
   {
@@ -248,7 +249,10 @@ function CategoryCard({ cat, onClick }) {
   );
 }
 
-export default function Landing({ onNavigate }) {
+// 2. Remove the old onNavigate prop
+export default function Landing() {
+  const navigate = useNavigate(); // 3. Initialize the router hook
+
   return (
     <div style={s.root}>
       <header style={s.header}>
@@ -275,7 +279,8 @@ export default function Landing({ onNavigate }) {
           <CategoryCard
             key={cat.id}
             cat={cat}
-            onClick={() => onNavigate(cat.id)}
+            // 4. Update the onClick to use React Router navigation
+            onClick={() => navigate(`/${cat.id}`)}
           />
         ))}
       </div>

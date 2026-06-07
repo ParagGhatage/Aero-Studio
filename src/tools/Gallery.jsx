@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { db } from '../db';
 
@@ -283,7 +284,8 @@ const styles = {
   },
 };
 
-export default function Gallery({ onBack }) {
+export default function Gallery() {
+  const navigate = useNavigate();
   const [viewingImage, setViewingImage] = useState(null);
   const [hoveredId, setHoveredId] = useState(null);
   const [dropzoneHovered, setDropzoneHovered] = useState(false);
@@ -378,7 +380,7 @@ export default function Gallery({ onBack }) {
     <div style={styles.root}>
       <header style={styles.header}>
         <div style={styles.headerLeft}>
-          <button style={styles.backBtn} onClick={onBack}>← Images</button>
+          <button style={styles.backBtn} onClick={() => navigate(-1)}>← Images</button>
           <div>
             <div style={styles.wordmark}>
               <span style={styles.wordmarkDot} />

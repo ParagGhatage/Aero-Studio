@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom'; // 1. Import the router hook
 
 const TOOLS = [
   {
@@ -209,8 +210,11 @@ function ToolCard({ tool, onClick }) {
   );
 }
 
-export default function ImagesHub({ onNavigate, onBack }) {
+// 2. Remove the old props
+export default function ImagesHub() {
+  const navigate = useNavigate(); // 3. Initialize the hook
   const [backHovered, setBackHovered] = useState(false);
+
   return (
     <div style={s.root}>
       <div style={s.topnav}>
@@ -220,7 +224,8 @@ export default function ImagesHub({ onNavigate, onBack }) {
             color: backHovered ? '#F5F0EB' : '#888',
             borderColor: backHovered ? '#444' : '#2A2A2A',
           }}
-          onClick={onBack}
+          // 4. Update back navigation
+          onClick={() => navigate(-1)}
           onMouseEnter={() => setBackHovered(true)}
           onMouseLeave={() => setBackHovered(false)}
         >
@@ -247,7 +252,8 @@ export default function ImagesHub({ onNavigate, onBack }) {
           <ToolCard
             key={tool.id}
             tool={tool}
-            onClick={() => onNavigate('images', tool.id)}
+            // 5. Update forward navigation to use the absolute path
+            onClick={() => navigate(`/images/${tool.id}`)}
           />
         ))}
       </div>

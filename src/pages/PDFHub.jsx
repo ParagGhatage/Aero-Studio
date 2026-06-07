@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const ACCENT = '#4ECDC4';
 
@@ -135,12 +136,13 @@ function ToolCard({ tool }) {
   );
 }
 
-export default function PDFHub({ onBack }) {
+export default function PDFHub() {
+  const navigate = useNavigate();
   const [bh, setBh] = useState(false);
   return (
     <div style={s.root}>
       <div style={s.topnav}>
-        <button style={s.backBtn(bh)} onClick={onBack} onMouseEnter={() => setBh(true)} onMouseLeave={() => setBh(false)}>
+        <button style={s.backBtn(bh)} onClick={() => navigate(-1)} onMouseEnter={() => setBh(true)} onMouseLeave={() => setBh(false)}>
           ← Back
         </button>
         <span style={s.breadcrumb}>Aero <span style={s.breadcrumbActive}> / PDF</span></span>

@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const ACCENT = '#A78BFA';
 
@@ -108,12 +109,13 @@ function ToolCard({ tool }) {
   );
 }
 
-export default function VideosHub({ onBack }) {
+export default function VideosHub() {
+  const navigate = useNavigate();
   const [bh, setBh] = useState(false);
   return (
     <div style={s.root}>
       <div style={s.topnav}>
-        <button style={s.backBtn(bh)} onClick={onBack} onMouseEnter={() => setBh(true)} onMouseLeave={() => setBh(false)}>
+        <button style={s.backBtn(bh)} onClick={() => navigate(-1)} onMouseEnter={() => setBh(true)} onMouseLeave={() => setBh(false)}>
           ← Back
         </button>
         <span style={s.breadcrumb}>Aero <span style={s.breadcrumbActive}> / Videos</span></span>
