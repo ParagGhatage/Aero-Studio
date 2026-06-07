@@ -156,8 +156,7 @@ export default function Gallery() {
     return (
       <div
         key={img.id}
-        className="gallery-grid-item"
-        style={{ borderColor: isSelected ? '#FF5F1F' : '', transform: isSelected ? 'scale(0.96)' : '' }}
+        className={`gallery-grid-item ${isSelected ? 'selected' : ''}`}
         onClick={() => {
           if (selectedImages.size > 0) toggleSelectImage(img.id, { stopPropagation: () => {} });
           else openViewer(img);
@@ -188,8 +187,15 @@ export default function Gallery() {
     <div className="gallery-root" onDragOver={(e) => e.preventDefault()} onDrop={handleDrop}>
       <header className="gallery-header">
         <div className="gallery-header-left">
-          <button className="gallery-back-btn" onClick={() => navigate('/images')}>← Images</button>
-          <div>
+          {/* Replaced text arrow with SVG and updated text */}
+          <button className="gallery-back-btn" onClick={() => navigate('/images')}>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M19 12H5M12 19l-7-7 7-7"/>
+            </svg>
+            Images Hub
+          </button>
+          
+          <div className="gallery-heading">
             <div className="gallery-wordmark"><span className="gallery-wordmark-dot" /> Gallery</div>
             <div className="gallery-title">{activeTab === 'albums' ? 'Albums' : 'My Photos'}</div>
             <div className="gallery-count">{allImages.length} image{allImages.length !== 1 ? 's' : ''} stored locally</div>

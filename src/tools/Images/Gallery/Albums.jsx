@@ -107,7 +107,9 @@ export default function Albums({ onSelectAlbum }) {
                 </div>
               )}
 
-              <div className="album-icon">📁</div>
+              <div className="album-icon" aria-hidden="true">
+                <span className="album-folder-icon" />
+              </div>
               <div className="album-name">{album.name}</div>
               <div className="album-count">
                 {imageCount} image{imageCount !== 1 ? 's' : ''}
