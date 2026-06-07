@@ -258,7 +258,7 @@ export default function Landing() {
       <header style={s.header}>
         <div style={s.wordmarkRow}>
           <div style={s.dot} />
-          <span style={s.wordmark}>Aero</span>
+          <span style={s.wordmark}>Aero Studio</span>
         </div>
         <span style={s.version}>v1.0 · Local-first</span>
       </header>
