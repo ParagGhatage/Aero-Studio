@@ -11,8 +11,8 @@ const C = {
   border: '#1C1C1C',
   borderEmphasis: '#2A2A2A',
   text: '#F0EBE3',
-  textSub: '#7A7672',
-  textDim: '#383432',
+  textSub: '#9A9490',
+  textDim: '#605C58',
   accent: '#FF5F1F',
   accentHover: '#FF7540',
   accentGlow: 'rgba(255,95,31,0.10)',
@@ -22,9 +22,9 @@ const C = {
 };
 
 const F = {
-  display: "'Syne', sans-serif",
-  body: "'DM Sans', sans-serif",
-  mono: "'DM Mono', monospace",
+  display: "'Roboto Mono', monospace",
+  body: "'Roboto Mono', monospace",
+  mono: "'Roboto Mono', monospace",
 };
 
 // --- Icons ---
@@ -86,15 +86,15 @@ const FEATURES = [
 
 const PRIVACY_ITEMS = [
   { title: 'Zero data collection', body: 'No analytics, telemetry, or crash reports. There is no instrumentation code in Aero Studio — not a single event is tracked.' },
-  { title: 'Local storage only', body: 'All files, thumbnails, and metadata are stored in your browser\'s IndexedDB. Nothing is ever transmitted to a server.' },
-  { title: 'No accounts required', body: 'You don\'t need an account to use Aero Studio. There\'s nothing to sign up for and no credentials to protect.' },
+  { title: 'Local storage only', body: "All files, thumbnails, and metadata are stored in your browser's IndexedDB. Nothing is ever transmitted to a server." },
+  { title: 'No accounts required', body: "You don't need an account to use Aero Studio. There's nothing to sign up for and no credentials to protect." },
   { title: 'Fully open source', body: 'The full source is on GitHub. Audit it, fork it, or self-host it. Our privacy is a technical property, not just a policy.' },
 ];
 
 const DOCS_STEPS = [
   { n: '01', title: 'Open or install the app', body: 'Click "Open App" to use it in the browser. For the best experience, install it as a PWA via the button in your address bar or the Install App button on this page.' },
   { n: '02', title: 'Add your files', body: 'Drag files directly onto any module, or use the import button inside each tool. Aero Studio accepts images (JPG/PNG/WebP/AVIF), PDFs, and video files (MP4/WebM/MOV/AVI).' },
-  { n: '03', title: 'Organise & work', body: 'Use the built-in tools per module: create albums, merge PDFs, trim video clips. All changes persist automatically in your browser\'s local storage.' },
+  { n: '03', title: 'Organise & work', body: "Use the built-in tools per module: create albums, merge PDFs, trim video clips. All changes persist automatically in your browser's local storage." },
   { n: '04', title: 'Use it offline', body: 'Once installed, Aero Studio works entirely without internet. The service worker caches the full app shell on first load.' },
 ];
 
@@ -126,9 +126,9 @@ function FeatureCard({ f, onClick }) {
       }} />
       <div style={{
         width: '64px', height: '64px', borderRadius: '16px',
-        border: `0.5px solid ${hov ? f.accent : C.border}`,
+        border: `0.5px solid ${hov ? f.accent : C.borderEmphasis}`,
         display: 'flex', alignItems: 'center', justifyContent: 'center',
-        color: hov ? f.accent : C.textDim,
+        color: hov ? f.accent : C.textSub,
         marginBottom: '2rem',
         background: hov ? `${f.accent}12` : 'transparent',
         transition: 'all 0.2s',
@@ -136,14 +136,13 @@ function FeatureCard({ f, onClick }) {
         {f.icon}
       </div>
       <div style={{
-        fontFamily: F.display, fontSize: '10px', fontWeight: 700,
-        letterSpacing: '0.2em', textTransform: 'uppercase',
-        color: hov ? f.accent : C.textDim,
+        fontFamily: F.display, fontSize: '10px', fontWeight: 600,
+        color: hov ? f.accent : C.textSub,
         marginBottom: '12px', transition: 'color 0.2s',
       }}>
         {f.tag}
       </div>
-      <div style={{ fontFamily: F.display, fontSize: '28px', fontWeight: 700, color: C.text, marginBottom: '16px', letterSpacing: '-0.01em' }}>
+      <div style={{ fontFamily: F.display, fontSize: '28px', fontWeight: 700, color: C.text, marginBottom: '16px' }}>
         {f.label}
       </div>
       <div style={{ fontSize: '14px', color: C.textSub, lineHeight: 1.8, flex: 1, marginBottom: '1.5rem' }}>
@@ -153,15 +152,15 @@ function FeatureCard({ f, onClick }) {
         {f.tools.map(t => (
           <span key={t} style={{
             fontSize: '11px', padding: '5px 12px', borderRadius: '20px',
-            border: `0.5px solid ${hov ? f.accent + '50' : C.border}`,
+            border: `0.5px solid ${hov ? f.accent + '50' : C.borderEmphasis}`,
             color: hov ? f.accent : C.textSub,
             transition: 'all 0.2s', fontFamily: F.display,
           }}>{t}</span>
         ))}
       </div>
       <div style={{
-        fontSize: '13px', fontFamily: F.display, fontWeight: 700,
-        letterSpacing: '0.05em', color: hov ? f.accent : C.textDim,
+        fontSize: '13px', fontFamily: F.display, fontWeight: 600,
+        color: hov ? f.accent : C.textSub,
         transform: hov ? 'translateX(5px)' : 'translateX(0)',
         transition: 'all 0.2s',
       }}>
@@ -175,8 +174,8 @@ function FeaturesPanel({ navigate }) {
   return (
     <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
       <div style={{ marginBottom: '4.5rem' }}>
-        <div style={{ fontFamily: F.display, fontSize: '10px', letterSpacing: '0.22em', textTransform: 'uppercase', color: C.textDim, marginBottom: '16px' }}>What's inside</div>
-        <h2 style={{ fontFamily: F.display, fontSize: 'clamp(32px, 4vw, 44px)', fontWeight: 700, color: C.text, letterSpacing: '-0.015em', margin: 0 }}>
+        <div style={{ fontFamily: F.display, fontSize: '10px', color: C.textDim, marginBottom: '16px' }}>What's inside</div>
+        <h2 style={{ fontFamily: F.display, fontSize: 'clamp(32px, 4vw, 44px)', fontWeight: 700, color: C.text, margin: 0 }}>
           Three modules. One workspace.
         </h2>
       </div>
@@ -194,7 +193,7 @@ function FeaturesPanel({ navigate }) {
         ].map(item => (
           <div key={item.label} style={{ background: C.surface, padding: '2.5rem 2rem', display: 'flex', alignItems: 'center', gap: '14px' }}>
             <span style={{ color: C.accent, fontSize: '20px', fontFamily: F.display }}>{item.icon}</span>
-            <span style={{ fontFamily: F.display, fontSize: '13px', fontWeight: 600, color: C.textSub, letterSpacing: '0.02em' }}>{item.label}</span>
+            <span style={{ fontFamily: F.display, fontSize: '13px', fontWeight: 600, color: C.textSub }}>{item.label}</span>
           </div>
         ))}
       </div>
@@ -205,8 +204,8 @@ function FeaturesPanel({ navigate }) {
 function AboutPanel() {
   return (
     <div style={{ maxWidth: '760px', margin: '0 auto' }}>
-      <div style={{ fontFamily: F.display, fontSize: '10px', letterSpacing: '0.22em', textTransform: 'uppercase', color: C.textDim, marginBottom: '16px' }}>About</div>
-      <h2 style={{ fontFamily: F.display, fontSize: 'clamp(32px, 4vw, 44px)', fontWeight: 700, color: C.text, letterSpacing: '-0.015em', marginBottom: '3rem' }}>
+      <div style={{ fontFamily: F.display, fontSize: '10px', color: C.textDim, marginBottom: '16px' }}>About</div>
+      <h2 style={{ fontFamily: F.display, fontSize: 'clamp(32px, 4vw, 44px)', fontWeight: 700, color: C.text, marginBottom: '3rem' }}>
         Built for the privacy-conscious creator.
       </h2>
       <p style={{ fontSize: '16px', color: C.textSub, lineHeight: 1.9, marginBottom: '1.75rem' }}>
@@ -239,11 +238,11 @@ function AboutPanel() {
 function PrivacyPanel() {
   return (
     <div style={{ maxWidth: '760px', margin: '0 auto' }}>
-      <div style={{ fontFamily: F.display, fontSize: '10px', letterSpacing: '0.22em', textTransform: 'uppercase', color: C.textDim, marginBottom: '16px' }}>Privacy Policy</div>
-      <h2 style={{ fontFamily: F.display, fontSize: 'clamp(32px, 4vw, 44px)', fontWeight: 700, color: C.text, letterSpacing: '-0.015em', marginBottom: '10px' }}>
+      <div style={{ fontFamily: F.display, fontSize: '10px', color: C.textDim, marginBottom: '16px' }}>Privacy Policy</div>
+      <h2 style={{ fontFamily: F.display, fontSize: 'clamp(32px, 4vw, 44px)', fontWeight: 700, color: C.text, marginBottom: '10px' }}>
         We collect nothing.
       </h2>
-      <div style={{ fontSize: '12px', color: C.textDim, fontFamily: F.display, letterSpacing: '0.06em', marginBottom: '3.5rem' }}>
+      <div style={{ fontSize: '12px', color: C.textDim, fontFamily: F.display, marginBottom: '3.5rem' }}>
         Last updated: June 2025
       </div>
       <div style={{ display: 'flex', flexDirection: 'column', gap: '1px', background: C.border, marginBottom: '2.5rem' }}>
@@ -275,8 +274,8 @@ function PrivacyPanel() {
 function DocsPanel({ navigate, handleInstall, deferredPrompt, installed }) {
   return (
     <div style={{ maxWidth: '760px', margin: '0 auto' }}>
-      <div style={{ fontFamily: F.display, fontSize: '10px', letterSpacing: '0.22em', textTransform: 'uppercase', color: C.textDim, marginBottom: '16px' }}>Documentation</div>
-      <h2 style={{ fontFamily: F.display, fontSize: 'clamp(32px, 4vw, 44px)', fontWeight: 700, color: C.text, letterSpacing: '-0.015em', marginBottom: '4rem' }}>
+      <div style={{ fontFamily: F.display, fontSize: '10px', color: C.textDim, marginBottom: '16px' }}>Documentation</div>
+      <h2 style={{ fontFamily: F.display, fontSize: 'clamp(32px, 4vw, 44px)', fontWeight: 700, color: C.text, marginBottom: '4rem' }}>
         Getting started.
       </h2>
       <div style={{ display: 'flex', flexDirection: 'column', gap: '1px', background: C.border, marginBottom: '3rem' }}>
@@ -284,7 +283,7 @@ function DocsPanel({ navigate, handleInstall, deferredPrompt, installed }) {
           <div key={step.n} style={{ background: C.surface, padding: '2.75rem', display: 'flex', gap: '2.5rem', alignItems: 'flex-start' }}>
             <div style={{
               fontFamily: F.display, fontSize: '11px', fontWeight: 700,
-              color: C.accent, letterSpacing: '0.1em', paddingTop: '4px', flexShrink: 0, width: '28px',
+              color: C.accent, paddingTop: '4px', flexShrink: 0, width: '28px',
             }}>{step.n}</div>
             <div>
               <div style={{ fontFamily: F.display, fontWeight: 700, fontSize: '16px', color: C.text, marginBottom: '10px' }}>{step.title}</div>
@@ -307,7 +306,7 @@ function DocsPanel({ navigate, handleInstall, deferredPrompt, installed }) {
       </div>
 
       <div style={{ padding: '1.75rem 2.25rem', background: C.surface, border: `0.5px solid ${C.border}`, borderRadius: '8px' }}>
-        <div style={{ fontFamily: F.display, fontWeight: 700, fontSize: '12px', color: C.textSub, letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: '1.25rem' }}>
+        <div style={{ fontFamily: F.display, fontWeight: 700, fontSize: '12px', color: C.textSub, marginBottom: '1.25rem' }}>
           PWA checklist for developers
         </div>
         <div style={{ fontFamily: F.mono, fontSize: '13px', color: C.textSub, lineHeight: 2 }}>
@@ -343,10 +342,8 @@ function Btn({ children, onClick, solid }) {
         borderRadius: '6px',
         color: solid ? '#080808' : C.accent,
         fontFamily: F.display,
-        fontWeight: 700,
+        fontWeight: 600,
         fontSize: '12px',
-        letterSpacing: '0.08em',
-        textTransform: 'uppercase',
         cursor: 'pointer',
         transition: 'all 0.18s',
         transform: hov ? 'translateY(-1px)' : 'translateY(0)',
@@ -365,12 +362,11 @@ export default function Landing() {
   const [installed, setInstalled] = useState(false);
 
   useEffect(() => {
-    // Inject fonts
     if (!document.getElementById('aero-fonts')) {
       const link = document.createElement('link');
       link.id = 'aero-fonts';
       link.rel = 'stylesheet';
-      link.href = 'https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&family=DM+Mono:wght@400;500&display=swap';
+      link.href = 'https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;600;700&display=swap';
       document.head.appendChild(link);
     }
 
@@ -395,7 +391,6 @@ export default function Landing() {
   return (
     <div style={{ background: C.bg, minHeight: '100vh', color: C.text, fontFamily: F.body, position: 'relative', overflowX: 'hidden' }}>
 
-      {/* Ambient glow — subtle orange radial behind hero */}
       <div style={{
         position: 'fixed', top: '-20vh', left: '50%', transform: 'translateX(-50%)',
         width: '70vw', height: '50vh',
@@ -414,15 +409,13 @@ export default function Landing() {
         backdropFilter: 'blur(16px)',
         WebkitBackdropFilter: 'blur(16px)',
       }}>
-        {/* Wordmark */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '9px', flexShrink: 0 }}>
           <div style={{ width: '7px', height: '7px', borderRadius: '50%', background: C.accent }} />
-          <span style={{ fontFamily: F.display, fontSize: '12px', fontWeight: 800, letterSpacing: '0.2em', textTransform: 'uppercase', color: C.accent }}>
+          <span style={{ fontFamily: F.display, fontSize: '12px', fontWeight: 700, color: C.accent }}>
             Aero Studio
           </span>
         </div>
 
-        {/* Tabs */}
         <div style={{ display: 'flex', alignItems: 'center' }}>
           {NAV_TABS.map(tab => {
             const active = activeTab === tab;
@@ -432,7 +425,6 @@ export default function Landing() {
           })}
         </div>
 
-        {/* Right side */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '18px', flexShrink: 0 }}>
           <GhLink url={GITHUB_URL} />
           <NavCTA onClick={() => navigate('/app')} />
@@ -442,25 +434,21 @@ export default function Landing() {
       {/* ── Hero ── */}
       <section style={{ position: 'relative', zIndex: 1, padding: '10rem 2.5rem 8rem', textAlign: 'center', minHeight: '100vh', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
 
-        {/* Badge pill */}
         <div style={{
           display: 'inline-flex', alignItems: 'center', gap: '8px',
           padding: '6px 18px', border: `0.5px solid ${C.borderEmphasis}`,
           borderRadius: '100px', marginBottom: '3rem',
-          fontSize: '12px', letterSpacing: '0.14em', textTransform: 'uppercase',
-          color: C.textSub, fontFamily: F.display,
+          fontSize: '12px', color: C.textSub, fontFamily: F.display,
         }}>
           <span style={{ width: '5px', height: '5px', borderRadius: '50%', background: C.accent, display: 'inline-block' }} />
           Local-first · Zero uploads · Open source
         </div>
 
-        {/* Headline */}
         <h1 style={{
           fontFamily: F.display,
           fontSize: 'clamp(64px, 12vw, 120px)',
-          fontWeight: 800,
-          letterSpacing: '-0.03em',
-          lineHeight: 1.05,
+          fontWeight: 700,
+          lineHeight: 1.1,
           margin: '0 auto 2.5rem',
           maxWidth: '1000px',
           color: C.text,
@@ -471,17 +459,16 @@ export default function Landing() {
 
         <p style={{
           fontSize: '20px', color: C.textSub, lineHeight: 1.85,
-          maxWidth: '580px', margin: '0 auto 4rem', fontWeight: 300,
+          maxWidth: '580px', margin: '0 auto 4rem', fontWeight: 400,
         }}>
           A local-first toolbox for images, documents, and video.
           Nothing ever leaves your browser.
         </p>
 
-        {/* Hero CTAs */}
         <div style={{ display: 'flex', gap: '14px', justifyContent: 'center', flexWrap: 'wrap', marginBottom: '6rem' }}>
-          <HeroCTA label="Open App →" solid onClick={() => navigate('/app')} />
+          <HeroCTA label="Open App" solid onClick={() => navigate('/app')} />
           {deferredPrompt && !installed && (
-            <HeroCTA label="Install App ↓" onClick={handleInstall} />
+            <HeroCTA label="Install App" onClick={handleInstall} />
           )}
           {installed && (
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '15px 24px', fontSize: '13px', color: C.teal, fontFamily: F.display }}>
@@ -490,7 +477,6 @@ export default function Landing() {
           )}
         </div>
 
-        {/* Stats row */}
         <div style={{
           display: 'flex', justifyContent: 'center',
           borderTop: `0.5px solid ${C.border}`,
@@ -508,17 +494,15 @@ export default function Landing() {
               borderRight: i < arr.length - 1 ? `0.5px solid ${C.border}` : 'none',
               padding: '0 2rem',
             }}>
-              <div style={{ fontFamily: F.display, fontSize: 'clamp(32px, 5vw, 48px)', fontWeight: 800, color: C.text, letterSpacing: '-0.02em' }}>{s.v}</div>
-              <div style={{ fontSize: '10px', color: C.textDim, letterSpacing: '0.14em', textTransform: 'uppercase', marginTop: '8px', fontFamily: F.display }}>{s.l}</div>
+              <div style={{ fontFamily: F.display, fontSize: 'clamp(32px, 5vw, 48px)', fontWeight: 700, color: C.text }}>{s.v}</div>
+              <div style={{ fontSize: '10px', color: C.textDim, marginTop: '8px', fontFamily: F.display }}>{s.l}</div>
             </div>
           ))}
         </div>
       </section>
 
-      {/* ── Divider ── */}
       <div style={{ height: '0.5px', background: C.border, margin: '0' }} />
 
-      {/* ── Tab content ── */}
       <section style={{ padding: '6rem 2.5rem 8rem', position: 'relative', zIndex: 1 }}>
         {activeTab === 'Features' && <FeaturesPanel navigate={navigate} />}
         {activeTab === 'About'    && <AboutPanel />}
@@ -526,21 +510,20 @@ export default function Landing() {
         {activeTab === 'Docs'     && <DocsPanel navigate={navigate} handleInstall={handleInstall} deferredPrompt={deferredPrompt} installed={installed} />}
       </section>
 
-      {/* ── Footer ── */}
       <footer style={{
         borderTop: `0.5px solid ${C.border}`,
         padding: '1.5rem 2.5rem',
         display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-        fontSize: '11px', color: C.textDim, letterSpacing: '0.06em',
+        fontSize: '11px', color: C.textDim,
         fontFamily: F.display, position: 'relative', zIndex: 1,
       }}>
         <span>All data stored in IndexedDB · Zero uploads · Zero tracking</span>
         <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
           <a
             href={GITHUB_URL} target="_blank" rel="noopener noreferrer"
-            style={{ color: C.textDim, textDecoration: 'none', transition: 'color 0.15s', display: 'flex', alignItems: 'center', gap: '6px' }}
-            onMouseEnter={e => e.currentTarget.style.color = C.textSub}
-            onMouseLeave={e => e.currentTarget.style.color = C.textDim}
+            style={{ color: C.textSub, textDecoration: 'none', transition: 'color 0.15s', display: 'flex', alignItems: 'center', gap: '6px' }}
+            onMouseEnter={e => e.currentTarget.style.color = C.text}
+            onMouseLeave={e => e.currentTarget.style.color = C.textSub}
           >
             <GitHubIcon /> GitHub
           </a>
@@ -551,7 +534,7 @@ export default function Landing() {
   );
 }
 
-// -- Tiny sub-components to avoid closure complexity in nav --
+// -- Tiny sub-components --
 
 function NavTab({ label, active, onClick }) {
   const [hov, setHov] = useState(false);
@@ -563,11 +546,11 @@ function NavTab({ label, active, onClick }) {
       style={{
         background: 'none', border: 'none',
         padding: '0 18px', height: '58px',
-        fontSize: '11px', letterSpacing: '0.14em', textTransform: 'uppercase',
+        fontSize: '11px',
         cursor: 'pointer',
-        color: active ? C.accent : hov ? C.textSub : C.textDim,
+        color: active ? C.accent : hov ? C.text : C.textSub,
         borderBottom: `1.5px solid ${active ? C.accent : 'transparent'}`,
-        fontFamily: F.display, fontWeight: 700,
+        fontFamily: F.display, fontWeight: 600,
         transition: 'color 0.15s, border-color 0.15s',
       }}
     >
@@ -578,16 +561,15 @@ function NavTab({ label, active, onClick }) {
 
 function GhLink({ url }) {
   const [hov, setHov] = useState(false);
-  
   return (
     <a
-      href={url} 
-      target="_blank" 
+      href={url}
+      target="_blank"
       rel="noopener noreferrer"
-      style={{ 
-        color: hov ? C.textSub : C.textDim, 
-        display: 'flex', 
-        transition: 'color 0.15s' 
+      style={{
+        color: hov ? C.text : C.textSub,
+        display: 'flex',
+        transition: 'color 0.15s',
       }}
       onMouseEnter={() => setHov(true)}
       onMouseLeave={() => setHov(false)}
@@ -607,8 +589,8 @@ function NavCTA({ onClick }) {
       style={{
         background: hov ? C.accentHover : C.accent,
         border: 'none', padding: '8px 20px', borderRadius: '6px',
-        color: '#080808', fontFamily: F.display, fontWeight: 800,
-        fontSize: '11px', letterSpacing: '0.14em', textTransform: 'uppercase',
+        color: '#080808', fontFamily: F.display, fontWeight: 600,
+        fontSize: '11px',
         cursor: 'pointer', transition: 'background 0.15s',
       }}
     >
@@ -629,8 +611,8 @@ function HeroCTA({ label, onClick, solid }) {
         border: solid ? 'none' : `0.5px solid ${C.accent}`,
         padding: '15px 36px', borderRadius: '8px',
         color: solid ? '#080808' : C.accent,
-        fontFamily: F.display, fontWeight: 800,
-        fontSize: '13px', letterSpacing: '0.1em', textTransform: 'uppercase',
+        fontFamily: F.display, fontWeight: 600,
+        fontSize: '13px',
         cursor: 'pointer',
         transition: 'all 0.2s',
         transform: hov ? 'translateY(-2px)' : 'translateY(0)',
