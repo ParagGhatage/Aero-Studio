@@ -136,7 +136,7 @@ function FeatureCard({ f, onClick }) {
         {f.icon}
       </div>
       <div style={{
-        fontFamily: F.display, fontSize: '10px', fontWeight: 600,
+        fontFamily: F.display, fontSize: '13px', fontWeight: 600,
         color: hov ? f.accent : C.textSub,
         marginBottom: '12px', transition: 'color 0.2s',
       }}>
@@ -151,7 +151,7 @@ function FeatureCard({ f, onClick }) {
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginTop: 'auto', marginBottom: '2rem' }}>
         {f.tools.map(t => (
           <span key={t} style={{
-            fontSize: '11px', padding: '5px 12px', borderRadius: '20px',
+            fontSize: '13px', padding: '6px 14px', borderRadius: '20px',
             border: `0.5px solid ${hov ? f.accent + '50' : C.borderEmphasis}`,
             color: hov ? f.accent : C.textSub,
             transition: 'all 0.2s', fontFamily: F.display,
@@ -159,7 +159,7 @@ function FeatureCard({ f, onClick }) {
         ))}
       </div>
       <div style={{
-        fontSize: '13px', fontFamily: F.display, fontWeight: 600,
+        fontSize: '14px', fontFamily: F.display, fontWeight: 600,
         color: hov ? f.accent : C.textSub,
         transform: hov ? 'translateX(5px)' : 'translateX(0)',
         transition: 'all 0.2s',
@@ -174,7 +174,7 @@ function FeaturesPanel({ navigate }) {
   return (
     <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
       <div style={{ marginBottom: '4.5rem' }}>
-        <div style={{ fontFamily: F.display, fontSize: '10px', color: C.textDim, marginBottom: '16px' }}>What's inside</div>
+        <div style={{ fontFamily: F.display, fontSize: '13px', color: C.textDim, marginBottom: '16px' }}>What's inside</div>
         <h2 style={{ fontFamily: F.display, fontSize: 'clamp(32px, 4vw, 44px)', fontWeight: 700, color: C.text, margin: 0 }}>
           Three modules. One workspace.
         </h2>
@@ -193,7 +193,7 @@ function FeaturesPanel({ navigate }) {
         ].map(item => (
           <div key={item.label} style={{ background: C.surface, padding: '2.5rem 2rem', display: 'flex', alignItems: 'center', gap: '14px' }}>
             <span style={{ color: C.accent, fontSize: '20px', fontFamily: F.display }}>{item.icon}</span>
-            <span style={{ fontFamily: F.display, fontSize: '13px', fontWeight: 600, color: C.textSub }}>{item.label}</span>
+            <span style={{ fontFamily: F.display, fontSize: '14px', fontWeight: 600, color: C.textSub }}>{item.label}</span>
           </div>
         ))}
       </div>
@@ -204,7 +204,7 @@ function FeaturesPanel({ navigate }) {
 function AboutPanel() {
   return (
     <div style={{ maxWidth: '760px', margin: '0 auto' }}>
-      <div style={{ fontFamily: F.display, fontSize: '10px', color: C.textDim, marginBottom: '16px' }}>About</div>
+      <div style={{ fontFamily: F.display, fontSize: '13px', color: C.textDim, marginBottom: '16px' }}>About</div>
       <h2 style={{ fontFamily: F.display, fontSize: 'clamp(32px, 4vw, 44px)', fontWeight: 700, color: C.text, marginBottom: '3rem' }}>
         Built for the privacy-conscious creator.
       </h2>
@@ -238,11 +238,11 @@ function AboutPanel() {
 function PrivacyPanel() {
   return (
     <div style={{ maxWidth: '760px', margin: '0 auto' }}>
-      <div style={{ fontFamily: F.display, fontSize: '10px', color: C.textDim, marginBottom: '16px' }}>Privacy Policy</div>
+      <div style={{ fontFamily: F.display, fontSize: '13px', color: C.textDim, marginBottom: '16px' }}>Privacy Policy</div>
       <h2 style={{ fontFamily: F.display, fontSize: 'clamp(32px, 4vw, 44px)', fontWeight: 700, color: C.text, marginBottom: '10px' }}>
         We collect nothing.
       </h2>
-      <div style={{ fontSize: '12px', color: C.textDim, fontFamily: F.display, marginBottom: '3.5rem' }}>
+      <div style={{ fontSize: '13px', color: C.textDim, fontFamily: F.display, marginBottom: '3.5rem' }}>
         Last updated: June 2025
       </div>
       <div style={{ display: 'flex', flexDirection: 'column', gap: '1px', background: C.border, marginBottom: '2.5rem' }}>
@@ -274,7 +274,7 @@ function PrivacyPanel() {
 function DocsPanel({ navigate, handleInstall, deferredPrompt, installed }) {
   return (
     <div style={{ maxWidth: '760px', margin: '0 auto' }}>
-      <div style={{ fontFamily: F.display, fontSize: '10px', color: C.textDim, marginBottom: '16px' }}>Documentation</div>
+      <div style={{ fontFamily: F.display, fontSize: '13px', color: C.textDim, marginBottom: '16px' }}>Documentation</div>
       <h2 style={{ fontFamily: F.display, fontSize: 'clamp(32px, 4vw, 44px)', fontWeight: 700, color: C.text, marginBottom: '4rem' }}>
         Getting started.
       </h2>
@@ -282,7 +282,7 @@ function DocsPanel({ navigate, handleInstall, deferredPrompt, installed }) {
         {DOCS_STEPS.map(step => (
           <div key={step.n} style={{ background: C.surface, padding: '2.75rem', display: 'flex', gap: '2.5rem', alignItems: 'flex-start' }}>
             <div style={{
-              fontFamily: F.display, fontSize: '11px', fontWeight: 700,
+              fontFamily: F.display, fontSize: '13px', fontWeight: 700,
               color: C.accent, paddingTop: '4px', flexShrink: 0, width: '28px',
             }}>{step.n}</div>
             <div>
@@ -306,10 +306,10 @@ function DocsPanel({ navigate, handleInstall, deferredPrompt, installed }) {
       </div>
 
       <div style={{ padding: '1.75rem 2.25rem', background: C.surface, border: `0.5px solid ${C.border}`, borderRadius: '8px' }}>
-        <div style={{ fontFamily: F.display, fontWeight: 700, fontSize: '12px', color: C.textSub, marginBottom: '1.25rem' }}>
+        <div style={{ fontFamily: F.display, fontWeight: 700, fontSize: '14px', color: C.textSub, marginBottom: '1.25rem' }}>
           PWA checklist for developers
         </div>
-        <div style={{ fontFamily: F.mono, fontSize: '13px', color: C.textSub, lineHeight: 2 }}>
+        <div style={{ fontFamily: F.mono, fontSize: '14px', color: C.textSub, lineHeight: 2 }}>
           {[
             ['manifest.json', 'name, icons, start_url, display: standalone'],
             ['service-worker.js', 'cache shell + assets on install event'],
@@ -343,7 +343,7 @@ function Btn({ children, onClick, solid }) {
         color: solid ? '#080808' : C.accent,
         fontFamily: F.display,
         fontWeight: 600,
-        fontSize: '12px',
+        fontSize: '13px',
         cursor: 'pointer',
         transition: 'all 0.18s',
         transform: hov ? 'translateY(-1px)' : 'translateY(0)',
@@ -411,7 +411,7 @@ export default function Landing() {
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '9px', flexShrink: 0 }}>
           <div style={{ width: '7px', height: '7px', borderRadius: '50%', background: C.accent }} />
-          <span style={{ fontFamily: F.display, fontSize: '12px', fontWeight: 700, color: C.accent }}>
+          <span style={{ fontFamily: F.display, fontSize: '14px', fontWeight: 700, color: C.accent }}>
             Aero Studio
           </span>
         </div>
@@ -438,7 +438,7 @@ export default function Landing() {
           display: 'inline-flex', alignItems: 'center', gap: '8px',
           padding: '6px 18px', border: `0.5px solid ${C.borderEmphasis}`,
           borderRadius: '100px', marginBottom: '3rem',
-          fontSize: '12px', color: C.textSub, fontFamily: F.display,
+          fontSize: '14px', color: C.textSub, fontFamily: F.display,
         }}>
           <span style={{ width: '5px', height: '5px', borderRadius: '50%', background: C.accent, display: 'inline-block' }} />
           Local-first · Zero uploads · Open source
@@ -471,7 +471,7 @@ export default function Landing() {
             <HeroCTA label="Install App" onClick={handleInstall} />
           )}
           {installed && (
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '15px 24px', fontSize: '13px', color: C.teal, fontFamily: F.display }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '15px 24px', fontSize: '14px', color: C.teal, fontFamily: F.display }}>
               ✓ Installed
             </div>
           )}
@@ -495,7 +495,7 @@ export default function Landing() {
               padding: '0 2rem',
             }}>
               <div style={{ fontFamily: F.display, fontSize: 'clamp(32px, 5vw, 48px)', fontWeight: 700, color: C.text }}>{s.v}</div>
-              <div style={{ fontSize: '10px', color: C.textDim, marginTop: '8px', fontFamily: F.display }}>{s.l}</div>
+              <div style={{ fontSize: '13px', color: C.textDim, marginTop: '8px', fontFamily: F.display }}>{s.l}</div>
             </div>
           ))}
         </div>
@@ -514,7 +514,7 @@ export default function Landing() {
         borderTop: `0.5px solid ${C.border}`,
         padding: '1.5rem 2.5rem',
         display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-        fontSize: '11px', color: C.textDim,
+        fontSize: '13px', color: C.textDim,
         fontFamily: F.display, position: 'relative', zIndex: 1,
       }}>
         <span>All data stored in IndexedDB · Zero uploads · Zero tracking</span>
@@ -546,7 +546,7 @@ function NavTab({ label, active, onClick }) {
       style={{
         background: 'none', border: 'none',
         padding: '0 18px', height: '58px',
-        fontSize: '11px',
+        fontSize: '13px',
         cursor: 'pointer',
         color: active ? C.accent : hov ? C.text : C.textSub,
         borderBottom: `1.5px solid ${active ? C.accent : 'transparent'}`,
@@ -590,7 +590,7 @@ function NavCTA({ onClick }) {
         background: hov ? C.accentHover : C.accent,
         border: 'none', padding: '8px 20px', borderRadius: '6px',
         color: '#080808', fontFamily: F.display, fontWeight: 600,
-        fontSize: '11px',
+        fontSize: '13px',
         cursor: 'pointer', transition: 'background 0.15s',
       }}
     >
@@ -612,7 +612,7 @@ function HeroCTA({ label, onClick, solid }) {
         padding: '15px 36px', borderRadius: '8px',
         color: solid ? '#080808' : C.accent,
         fontFamily: F.display, fontWeight: 600,
-        fontSize: '13px',
+        fontSize: '14px',
         cursor: 'pointer',
         transition: 'all 0.2s',
         transform: hov ? 'translateY(-2px)' : 'translateY(0)',
