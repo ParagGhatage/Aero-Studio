@@ -18,6 +18,7 @@ const CATEGORIES = [
         <path d="M27 32 L33 23 L42 32" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round"/>
       </svg>
     ),
+    disabled: false,
   },
   {
     id: 'pdf',
@@ -37,6 +38,7 @@ const CATEGORIES = [
         <line x1="15" y1="33" x2="24" y2="33" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
       </svg>
     ),
+    disabled: true,
   },
   {
     id: 'videos',
@@ -53,6 +55,7 @@ const CATEGORIES = [
         <path d="M19 20 L31 26 L19 32 Z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round"/>
       </svg>
     ),
+    disabled: true,
   },
 ];
 
@@ -279,8 +282,12 @@ export default function AppDashboard() {
           <CategoryCard
             key={cat.id}
             cat={cat}
-            // 4. Update the onClick to use React Router navigation
-            onClick={() => navigate(`/${cat.id}`)}
+            onClick={() => {
+              // Only trigger the router if the ID is 'images'
+              if (cat.id === 'images') {
+                navigate(`/${cat.id}`);
+              }
+            }}
           />
         ))}
       </div>
