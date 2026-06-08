@@ -1,44 +1,43 @@
 import { createBrowserRouter } from 'react-router-dom';
-import Landing from './pages/Landing';
+
+// Pages & Layouts
+import Landing from '../src/pages/Landing'; // Ensure you import the new landing page
+import AppLayout from './AppLayout'; // The global shell with the navigation/back button
+import AppDashboard from './pages/AppDashboard';
+
+// Hubs
 import ImagesHub from './pages/ImageStudio';
 import PDFHub from './pages/PDFStudio';
 import VideosHub from './pages/VideoLab';
+
+// Tools
 import Gallery from './tools/Images/Gallery/Gallery';
 import Crop from './tools/Images/Crop/Crop';
 
 /**
- * TOOL REGISTRY — Add new tools here
+ * TOOL REGISTRY
  * Structure: { toolId, component, toolName, category }
  */
 export const toolRegistry = {
   images: {
-    hub: 'ImagesHub',
+    hub: 'ImageStudio',
     tools: {
       gallery: { component: Gallery, name: 'Gallery' },
       crop: { component: Crop, name: 'Crop' },
-      // slideshow: { component: Slideshow, name: 'Slideshow' },
-      // metadata: { component: Metadata, name: 'Metadata Reader' },
     },
   },
   pdf: {
-    hub: 'PDFHub',
-    tools: {
-      // viewer: { component: PDFViewer, name: 'Viewer' },
-      // merger: { component: PDFMerger, name: 'Merger' },
-    },
+    hub: 'PDFStudio',
+    tools: {},
   },
   videos: {
-    hub: 'VideosHub',
-    tools: {
-      // player: { component: VideoPlayer, name: 'Player' },
-      // capture: { component: FrameCapture, name: 'Frame Capture' },
-    },
+    hub: 'VideoLab',
+    tools: {},
   },
 };
 
 /**
  * ROUTE CONFIGURATION
- * Automatically generates paths from toolRegistry
  */
 const generateToolRoutes = () => {
   const routes = [];
@@ -46,7 +45,8 @@ const generateToolRoutes = () => {
   Object.entries(toolRegistry).forEach(([category, config]) => {
     Object.entries(config.tools).forEach(([toolId, toolConfig]) => {
       routes.push({
-        // Add /* so tools can manage their own internal tabs/sub-routes
+        // Removed the leading slash so these act as relative paths 
+        // inside the layout structure if needed, though absolute works too.
         path: `/${category}/${toolId}/*`,
         element: <toolConfig.component />,
       });
@@ -58,20 +58,32 @@ const generateToolRoutes = () => {
 
 export const router = createBrowserRouter([
   {
+    // The public-facing marketing page (No app shell)
     path: '/',
     element: <Landing />,
   },
   {
-    path: '/images',
-    element: <ImagesHub />,
+    // The App Layout wraps EVERYTHING inside the app
+    element: <AppLayout />,
+    children: [
+      {
+        path: '/app',
+        element: <AppDashboard />,
+      },
+      {
+        path: '/images',
+        element: <ImagesHub />,
+      },
+      {
+        path: '/pdf',
+        element: <PDFHub />,
+      },
+      {
+        path: '/videos',
+        element: <VideosHub />,
+      },
+      // Spread all the dynamically generated tool routes into this layout wrapper
+      ...generateToolRoutes(),
+    ],
   },
-  {
-    path: '/pdf',
-    element: <PDFHub />,
-  },
-  {
-    path: '/videos',
-    element: <VideosHub />,
-  },
-  ...generateToolRoutes(),
 ]);
