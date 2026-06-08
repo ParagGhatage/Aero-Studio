@@ -8,6 +8,7 @@ A local-first, privacy-focused workspace for managing and transforming your medi
 
 #### 1. Image Studio
 Tools for organizing, managing, and editing your photo library locally.
+<img width="1280" height="558" alt="capture_crop" src="https://github.com/user-attachments/assets/73314bf8-84c3-4608-a2ec-135cd13de782" />
 
 * **Media Gallery & Albums**
   Manage your entire photo collection with a database-backed grid, album categorization, and batch operations.
