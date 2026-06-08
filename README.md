@@ -21,7 +21,6 @@ Tools for organizing, managing, and editing your photo library locally.
   
 
 
-
 * **Crop & Transform**
   Perform precise geometric edits including rotation and flipping, cropping using native canvas processing.
   <img width="843" height="892" alt="crop and rotate" src="https://github.com/user-attachments/assets/55784d2f-359d-412a-a975-270da97d48fe" />
