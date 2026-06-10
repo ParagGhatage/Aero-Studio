@@ -28,12 +28,12 @@ export default defineConfig({
         scope: '/',
         "icons": [
   {
-    "src": "/Logo_192x192.png",
+    "src": "/square-image_192.png",
     "sizes": "192x192",
     "type": "image/png"
   },
   {
-    "src": "/Logo_512x512.png",
+    "src": "/square-image_512.png",
     "sizes": "512x512",
     "type": "image/png"
   }
