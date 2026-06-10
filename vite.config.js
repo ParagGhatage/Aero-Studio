@@ -26,14 +26,18 @@ export default defineConfig({
         display: 'standalone',
         start_url: '/',
         scope: '/',
-        icons: [
-          {
-            src: 'Phone_log_192x192_up.png',
-            sizes: '780x768',
-            type: 'image/png',
-            purpose: 'any'
-          }
-        ]
+        "icons": [
+  {
+    "src": "/Logo_192x192.png",
+    "sizes": "192x192",
+    "type": "image/png"
+  },
+  {
+    "src": "/Logo_512x512.png",
+    "sizes": "512x512",
+    "type": "image/png"
+  }
+]
       }
     })
   ],
