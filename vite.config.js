@@ -28,9 +28,9 @@ export default defineConfig({
         scope: '/',
         icons: [
           {
-            src: 'Phone_log_192x192.jpeg',
-            sizes: '192x192',
-            type: 'image/jpeg',
+            src: 'Phone_log_192x192_up.png',
+            sizes: '780x768',
+            type: 'image/png',
             purpose: 'any'
           }
         ]
