@@ -229,7 +229,7 @@ export default function Gallery() {
   };
 
   return (
-    <div className="gallery-root" onDragOver={(e) => e.preventDefault()} onDrop={handleDrop}>
+    <div className={`gallery-root ${infoImage ? 'info-open' : ''}`} onDragOver={(e) => e.preventDefault()} onDrop={handleDrop}>
       <header className="gallery-header">
         <div className="gallery-header-left">
           <button className="gallery-back-btn" onClick={() => navigate('/images')}>

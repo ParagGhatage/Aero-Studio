@@ -1,9 +1,14 @@
 import { createBrowserRouter } from 'react-router-dom';
 
 // Pages & Layouts
-import Landing from '../src/pages/Landing'; // Ensure you import the new landing page
+import Landing from './pages/landing/Landing'; // Ensure you import the new landing page
 import AppLayout from './AppLayout'; // The global shell with the navigation/back button
 import AppDashboard from './pages/AppDashboard';
+import LandingAbout from './pages/landing/LandingAbout';
+import LandingDocs from './pages/landing/LandingDocs';
+import LandingFeatures from './pages/landing/LandingFeatures';
+import LandingPrivacy from './pages/landing/LandingPrivacy';
+import LandingLayout from './pages/landing/LandingLayout';
 
 // Hubs
 import ImagesHub from './pages/ImageStudio';
@@ -13,6 +18,7 @@ import VideosHub from './pages/VideoLab';
 // Tools
 import Gallery from './tools/Images/Gallery/Gallery';
 import Crop from './tools/Images/Crop/Crop';
+
 
 /**
  * TOOL REGISTRY
@@ -61,6 +67,16 @@ export const router = createBrowserRouter([
     // The public-facing marketing page (No app shell)
     path: '/',
     element: <Landing />,
+    
+  },
+  {
+    element: <LandingLayout />,
+    children: [
+      { path: '/features', element: <LandingFeatures /> },
+      { path: '/about',    element: <LandingAbout />    },
+      { path: '/privacy',  element: <LandingPrivacy />  },
+      { path: '/docs',     element: <LandingDocs />     },
+    ],
   },
   {
     // The App Layout wraps EVERYTHING inside the app

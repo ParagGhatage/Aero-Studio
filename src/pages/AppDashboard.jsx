@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom'; // 1. Import the hook
+import { C, F } from './landingConstants';
 
 const CATEGORIES = [
   {
@@ -8,7 +9,7 @@ const CATEGORIES = [
     tag: 'Photo & Graphics',
     description: 'Organise, view and edit your photos. Drag-and-drop import, albums, and a full-screen viewer — all stored locally.',
     tools: ['Gallery', 'Slideshow', 'Metadata', 'Batch Resize'],
-    accentColor: '#FF5F1F',
+    accentColor: C.accent,
     glowColor: 'rgba(255,95,31,0.18)',
     icon: (
       <svg width="52" height="52" viewBox="0 0 52 52" fill="none">
@@ -26,7 +27,7 @@ const CATEGORIES = [
     tag: 'Documents',
     description: 'View, merge, split and extract text from PDF files. Handle multi-page documents without any uploads to the cloud.',
     tools: ['Viewer', 'Merger', 'Splitter', 'Text Extract'],
-    accentColor: '#4ECDC4',
+    accentColor: C.teal,
     glowColor: 'rgba(78,205,196,0.15)',
     icon: (
       <svg width="52" height="52" viewBox="0 0 52 52" fill="none">
@@ -46,7 +47,7 @@ const CATEGORIES = [
     tag: 'Media',
     description: 'Play, trim and capture frames from local video files. Supports all major formats with keyboard-driven controls.',
     tools: ['Player', 'Frame Capture', 'Clip Trim', 'Subtitles'],
-    accentColor: '#A78BFA',
+    accentColor: C.violet,
     glowColor: 'rgba(167,139,250,0.15)',
     icon: (
       <svg width="52" height="52" viewBox="0 0 52 52" fill="none">
@@ -61,45 +62,14 @@ const CATEGORIES = [
 
 const s = {
   root: {
-    background: '#0D0D0D',
-    minHeight: '100vh',
-    fontFamily: 'sans-serif',
-    color: '#F5F0EB',
+    background: C.bg,
+    minHeight: 'calc(100vh - 70px)',
+    fontFamily: F.body,
+    color: C.text,
     display: 'flex',
     flexDirection: 'column',
     padding: '0',
     overflow: 'hidden',
-  },
-  header: {
-    padding: '2rem 2.5rem 1.5rem',
-    borderBottom: '0.5px solid #1E1E1E',
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  wordmarkRow: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '8px',
-  },
-  dot: {
-    width: '7px',
-    height: '7px',
-    borderRadius: '50%',
-    background: '#FF5F1F',
-    flexShrink: 0,
-  },
-  wordmark: {
-    fontSize: '11px',
-    letterSpacing: '0.22em',
-    textTransform: 'uppercase',
-    color: '#FF5F1F',
-    fontWeight: 600,
-  },
-  version: {
-    fontSize: '11px',
-    color: '#3A3A3A',
-    letterSpacing: '0.08em',
   },
   hero: {
     padding: '3rem 2.5rem 2rem',
@@ -109,20 +79,23 @@ const s = {
     fontSize: '11px',
     letterSpacing: '0.18em',
     textTransform: 'uppercase',
-    color: '#444',
+    color: C.textDim,
     marginBottom: '12px',
+    fontFamily: F.display,
+    fontWeight: 500,
   },
   heroTitle: {
     fontSize: '36px',
-    fontWeight: 300,
-    letterSpacing: '-0.01em',
-    color: '#F5F0EB',
+    fontWeight: 700,
+    letterSpacing: '0',
+    color: C.text,
     lineHeight: 1.15,
     marginBottom: '12px',
+    fontFamily: F.display,
   },
   heroSubtitle: {
     fontSize: '14px',
-    color: '#666',
+    color: C.textSub,
     lineHeight: 1.6,
   },
   grid: {
@@ -130,12 +103,12 @@ const s = {
     display: 'grid',
     gridTemplateColumns: 'repeat(3, 1fr)',
     gap: '0',
-    borderTop: '0.5px solid #1E1E1E',
+    borderTop: `1px solid ${C.border}`,
   },
   card: (accent, glow, hovered) => ({
     position: 'relative',
     padding: '2.5rem',
-    borderRight: '0.5px solid #1E1E1E',
+    borderRight: `1px solid ${C.border}`,
     cursor: 'pointer',
     transition: 'background 0.25s ease',
     background: hovered ? glow : 'transparent',
@@ -158,12 +131,12 @@ const s = {
     width: '70px',
     height: '70px',
     borderRadius: '16px',
-    border: `0.5px solid ${hovered ? accent : '#2A2A2A'}`,
+    border: `1px solid ${hovered ? accent : C.borderEmphasis}`,
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: '1.5rem',
-    color: hovered ? accent : '#444',
+    color: hovered ? accent : C.textDim,
     transition: 'all 0.2s ease',
     background: hovered ? `${accent}12` : 'transparent',
   }),
@@ -171,20 +144,20 @@ const s = {
     fontSize: '10px',
     letterSpacing: '0.18em',
     textTransform: 'uppercase',
-    color: hovered ? accent : '#444',
+    color: hovered ? accent : C.textDim,
     marginBottom: '8px',
     transition: 'color 0.2s',
   }),
   cardTitle: {
     fontSize: '26px',
     fontWeight: 400,
-    color: '#F5F0EB',
+    color: C.text,
     marginBottom: '12px',
     letterSpacing: '-0.01em',
   },
   cardDesc: {
     fontSize: '13px',
-    color: '#666',
+    color: C.textSub,
     lineHeight: 1.7,
     flex: 1,
   },
@@ -198,15 +171,15 @@ const s = {
     fontSize: '11px',
     padding: '4px 10px',
     borderRadius: '20px',
-    border: `0.5px solid ${hovered ? accent + '55' : '#2A2A2A'}`,
-    color: hovered ? accent : '#555',
+    border: `1px solid ${hovered ? accent + '55' : C.borderEmphasis}`,
+    color: hovered ? accent : C.textDim,
     transition: 'all 0.2s',
     letterSpacing: '0.02em',
   }),
   cardArrow: (accent, hovered) => ({
     marginTop: '1.5rem',
     fontSize: '13px',
-    color: hovered ? accent : '#3A3A3A',
+    color: hovered ? accent : C.textDim,
     transition: 'all 0.2s',
     display: 'flex',
     alignItems: 'center',
@@ -217,12 +190,13 @@ const s = {
   }),
   footer: {
     padding: '1rem 2.5rem',
-    borderTop: '0.5px solid #1E1E1E',
+    borderTop: `1px solid ${C.border}`,
     fontSize: '11px',
-    color: '#2A2A2A',
+    color: C.textDim,
     letterSpacing: '0.06em',
     display: 'flex',
     justifyContent: 'space-between',
+    fontFamily: F.display,
   },
 };
 
@@ -258,14 +232,6 @@ export default function AppDashboard() {
 
   return (
     <div style={s.root}>
-      <header style={s.header}>
-        <div style={s.wordmarkRow}>
-          <div style={s.dot} />
-          <span style={s.wordmark}>Aero Studio</span>
-        </div>
-        <span style={s.version}>v1.0 · Local-first</span>
-      </header>
-
       <div style={s.hero}>
         <div style={s.heroEyebrow}>Multimedia Workspace</div>
         <div style={s.heroTitle}>
