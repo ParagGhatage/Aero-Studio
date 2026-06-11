@@ -18,6 +18,7 @@ import VideosHub from './pages/VideoLab';
 // Tools
 import Gallery from './tools/Images/Gallery/Gallery';
 import Crop from './tools/Images/Crop/Crop';
+import Compress from './tools/Images/Compress/Compress';
 
 
 /**
@@ -30,6 +31,8 @@ export const toolRegistry = {
     tools: {
       gallery: { component: Gallery, name: 'Gallery' },
       crop: { component: Crop, name: 'Crop' },
+      compress: { component: Compress, name: 'Compress' },
+
     },
   },
   pdf: {

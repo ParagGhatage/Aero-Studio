@@ -31,16 +31,16 @@ const TOOLS = [
   },
   
   {
-    id: 'metadata',
-    name: 'Metadata Reader',
-    description: 'Inspect EXIF data, GPS coordinates, camera settings and timestamps embedded in your images.',
-    status: 'soon',
+    id: 'compress',
+    name: 'Compress',
+    description: 'Compress any image to desired size.',
+    status: 'ready',
     icon: (
       <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
-        <circle cx="14" cy="14" r="10" stroke="currentColor" strokeWidth="1.4"/>
-        <line x1="14" y1="10" x2="14" y2="14" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/>
-        <circle cx="14" cy="17" r="1" fill="currentColor"/>
-      </svg>
+  <path d="M7 4 L17 4 L21 8 L21 24 L7 24 Z" stroke="currentColor" strokeWidth="1.4" strokeLinejoin="round"/>
+  <path d="M17 4 L17 8 L21 8" stroke="currentColor" strokeWidth="1.4" strokeLinejoin="round"/>
+  <polyline points="12,10 14,12 12,14 14,16 12,18" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
+</svg>
     ),
   },
   {
