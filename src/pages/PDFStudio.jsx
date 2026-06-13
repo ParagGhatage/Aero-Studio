@@ -1,7 +1,4 @@
-import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-
-const ACCENT = '#4ECDC4';
 
 const TOOLS = [
   {
@@ -55,106 +52,79 @@ const TOOLS = [
   },
 ];
 
-const s = {
-  root: {
-    background: '#0D0D0D',
-    minHeight: '100vh',
-    fontFamily: 'sans-serif',
-    color: '#F5F0EB',
-    padding: '2rem 2.5rem',
-  },
-  topnav: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '12px',
-    marginBottom: '2.5rem',
-  },
-  backBtn: (hovered) => ({
-    background: 'transparent',
-    border: `0.5px solid ${hovered ? '#444' : '#2A2A2A'}`,
-    color: hovered ? '#F5F0EB' : '#888',
-    padding: '7px 14px',
-    borderRadius: '8px',
-    fontSize: '12px',
-    cursor: 'pointer',
-    display: 'flex',
-    alignItems: 'center',
-    gap: '6px',
-    transition: 'all 0.15s',
-  }),
-  breadcrumb: { fontSize: '12px', color: '#3A3A3A', letterSpacing: '0.06em' },
-  breadcrumbActive: { color: '#666' },
-  pageHeader: { marginBottom: '2.5rem' },
-  eyebrow: {
-    fontSize: '10px',
-    letterSpacing: '0.2em',
-    textTransform: 'uppercase',
-    color: ACCENT,
-    marginBottom: '8px',
-    display: 'flex',
-    alignItems: 'center',
-    gap: '6px',
-  },
-  dot: { width: '5px', height: '5px', borderRadius: '50%', background: ACCENT },
-  pageTitle: { fontSize: '28px', fontWeight: 300, color: '#F5F0EB', marginBottom: '6px' },
-  pageSub: { fontSize: '13px', color: '#555' },
-  divider: { height: '0.5px', background: '#1E1E1E', margin: '2rem 0' },
-  label: { fontSize: '10px', letterSpacing: '0.18em', textTransform: 'uppercase', color: '#3A3A3A', marginBottom: '1rem' },
-  grid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: '12px' },
-  card: (hovered) => ({
-    background: '#111',
-    border: `0.5px solid ${hovered ? ACCENT + '55' : '#1E1E1E'}`,
-    borderRadius: '12px',
-    padding: '1.5rem',
-    opacity: 0.5,
-    cursor: 'default',
-    transition: 'border-color 0.2s',
-  }),
-  iconWrap: {
-    width: '48px', height: '48px', borderRadius: '12px',
-    border: '0.5px solid #2A2A2A', display: 'flex', alignItems: 'center',
-    justifyContent: 'center', color: '#3A3A3A', marginBottom: '1rem',
-  },
-  name: { fontSize: '15px', fontWeight: 500, color: '#F5F0EB', marginBottom: '6px' },
-  desc: { fontSize: '12px', color: '#555', lineHeight: 1.65 },
-  badge: {
-    display: 'inline-block', fontSize: '10px', letterSpacing: '0.1em',
-    textTransform: 'uppercase', padding: '3px 8px', borderRadius: '20px',
-    border: '0.5px solid #2A2A2A', color: '#3A3A3A', marginTop: '10px',
-  },
-};
-
 function ToolCard({ tool }) {
-  const [hovered, setHovered] = useState(false);
   return (
-    <div style={s.card(hovered)} onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)}>
-      <div style={s.iconWrap}>{tool.icon}</div>
-      <div style={s.name}>{tool.name}</div>
-      <div style={s.desc}>{tool.description}</div>
-      <div style={s.badge}>Coming Soon</div>
+    <div className="bg-[#111] border-[0.5px] border-[#1E1E1E] rounded-xl p-6 opacity-50 cursor-default transition-colors duration-200 hover:border-[#4ECDC455]">
+      
+      {/* Icon Wrap */}
+      <div className="w-12 h-12 rounded-xl border-[0.5px] border-[#2A2A2A] flex items-center justify-center text-[#3A3A3A] mb-4">
+        {tool.icon}
+      </div>
+      
+      <div className="text-[15px] font-medium text-[#F5F0EB] mb-1.5">
+        {tool.name}
+      </div>
+      
+      <div className="text-xs text-[#555] leading-[1.65]">
+        {tool.description}
+      </div>
+      
+      {/* Coming Soon Badge */}
+      <div className="inline-block text-[10px] tracking-widest uppercase px-2 py-0.75 rounded-full border-[0.5px] border-[#2A2A2A] text-[#3A3A3A] mt-2.5">
+        Coming Soon
+      </div>
+      
     </div>
   );
 }
 
 export default function PDFHub() {
   const navigate = useNavigate();
-  const [bh, setBh] = useState(false);
+
   return (
-    <div style={s.root}>
-      <div style={s.topnav}>
-        <button style={s.backBtn(bh)} onClick={() => navigate(-1)} onMouseEnter={() => setBh(true)} onMouseLeave={() => setBh(false)}>
+    <div className="bg-[#0D0D0D] min-h-dvh font-body text-[#F5F0EB] px-6 py-8 md:px-10">
+      
+      {/* Top Navigation */}
+      <div className="flex items-center gap-3 mb-10">
+        <button 
+          onClick={() => navigate(-1)} 
+          className="bg-transparent border-[0.5px] border-[#2A2A2A] text-[#888] px-3.5 py-1.75 rounded-lg text-xs cursor-pointer flex items-center gap-1.5 transition-colors duration-150 hover:text-[#F5F0EB] hover:border-[#444]"
+        >
           ← Back
         </button>
-        <span style={s.breadcrumb}>Aero <span style={s.breadcrumbActive}> / PDF</span></span>
+        <span className="text-xs text-[#3A3A3A] tracking-[0.06em]">
+          Aero <span className="text-[#666]"> / PDF</span>
+        </span>
       </div>
-      <div style={s.pageHeader}>
-        <div style={s.eyebrow}><span style={s.dot} /> Documents</div>
-        <div style={s.pageTitle}>PDF</div>
-        <div style={s.pageSub}>PDF tools are in development — coming soon.</div>
+
+      {/* Page Header */}
+      <div className="mb-10">
+        <div className="text-[10px] tracking-[0.2em] uppercase text-[#4ECDC4] mb-2 flex items-center gap-1.5 font-display">
+          <span className="w-1.25 h-1.25 rounded-full bg-[#4ECDC4]" /> 
+          Documents
+        </div>
+        <div className="text-[28px] font-light tracking-[-0.01em] text-[#F5F0EB] mb-1.5 font-display">
+          PDF
+        </div>
+        <div className="text-[13px] text-[#555]">
+          PDF tools are in development — coming soon.
+        </div>
       </div>
-      <div style={s.divider} />
-      <div style={s.label}>Planned Tools</div>
-      <div style={s.grid}>{TOOLS.map(t => <ToolCard key={t.name} tool={t} />)}</div>
+
+      {/* Divider */}
+      <div className="h-[0.5px] bg-[#1E1E1E] my-8" />
+      
+      <div className="text-[10px] tracking-[0.18em] uppercase text-[#3A3A3A] mb-4 font-display">
+        Planned Tools
+      </div>
+
+      {/* Auto-filling Grid */}
+      <div className="grid grid-cols-[repeat(auto-fill,minmax(240px,1fr))] gap-3">
+        {TOOLS.map(t => (
+          <ToolCard key={t.name} tool={t} />
+        ))}
+      </div>
+      
     </div>
   );
 }

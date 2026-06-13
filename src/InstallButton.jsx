@@ -1,21 +1,5 @@
 import { useState, useEffect } from 'react';
 
-const s = {
-  button: {
-    padding: '8px 16px',
-    fontSize: '12px',
-    letterSpacing: '0.1em',
-    textTransform: 'uppercase',
-    color: '#0D0D0D',
-    background: '#4ECDC4', 
-    border: 'none',
-    borderRadius: '4px',
-    cursor: 'pointer',
-    fontWeight: 600,
-    transition: 'transform 0.2s',
-  }
-};
-
 export default function InstallButton() {
   const [deferredPrompt, setDeferredPrompt] = useState(null);
   const [isInstallable, setIsInstallable] = useState(false);
@@ -59,10 +43,8 @@ export default function InstallButton() {
 
   return (
     <button 
-      style={s.button} 
       onClick={handleInstallClick}
-      onMouseEnter={(e) => e.target.style.transform = 'translateY(-2px)'}
-      onMouseLeave={(e) => e.target.style.transform = 'translateY(0)'}
+      className="px-4 py-2 text-xs tracking-widest uppercase text-[#0D0D0D] bg-[#4ECDC4] border-none rounded font-semibold cursor-pointer transition-transform duration-200 hover:-translate-y-0.5"
     >
       Install App
     </button>

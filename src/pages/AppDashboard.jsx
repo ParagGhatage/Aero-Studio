@@ -65,7 +65,6 @@ const CATEGORIES = [
 ];
 
 function CategoryCard({ cat, onClick }) {
-  // Notice: The useState for hover is gone!
   return (
     <div
       style={{
@@ -74,7 +73,8 @@ function CategoryCard({ cat, onClick }) {
         '--icon-bg': cat.iconBg,
         '--chip-border': cat.chipBorder
       }}
-      className="group relative p-10 border-r border-aero-border cursor-pointer transition-colors duration-200 flex flex-col min-h-80 hover:bg-(--card-glow)"
+      // Switched to [var(--...)] syntax and added responsive borders
+      className="group relative p-8 md:p-10 border-b md:border-b-0 md:border-r border-aero-border cursor-pointer transition-colors duration-200 flex flex-col min-h-80 hover:bg-(--card-glow)"
       onClick={onClick}
     >
       {/* Top animating border line */}
@@ -85,7 +85,7 @@ function CategoryCard({ cat, onClick }) {
         {cat.icon}
       </div>
 
-      <div className="text-[10px] tracking-[0.18em] uppercase text-aero-text-dim mb-2 transition-colors duration-200 group-hover:text-(--card-accent)]">
+      <div className="text-[10px] tracking-[0.18em] uppercase text-aero-text-dim mb-2 transition-colors duration-200 group-hover:text-(--card-accent)">
         {cat.tag}
       </div>
       
@@ -120,9 +120,10 @@ export default function AppDashboard() {
   const navigate = useNavigate();
 
   return (
-    <div className="bg-aero-bg min-h-[calc(100vh-70px)] font-body text-aero-text flex flex-col p-0 overflow-hidden">
+    // Updated to use 100dvh for proper mobile sizing
+    <div className="bg-aero-bg min-h-[calc(100dvh-70px)] font-body text-aero-text flex flex-col p-0 overflow-x-hidden w-full">
       
-      <div className="pt-12 px-10 pb-8 max-w-155">
+      <div className="pt-12 px-6 md:px-10 pb-8 max-w-155">
         <div className="text-[11px] tracking-[0.18em] uppercase text-aero-text-dim mb-3 font-display font-medium">
           Multimedia Workspace
         </div>
@@ -135,7 +136,8 @@ export default function AppDashboard() {
         </div>
       </div>
 
-      <div className="flex-1 grid grid-cols-3 gap-0 border-t border-aero-border">
+      {/* Grid shifts from 1 column on phones to 3 columns on desktops */}
+      <div className="flex-1 grid grid-cols-1 md:grid-cols-3 gap-0 border-t border-aero-border w-full">
         {CATEGORIES.map(cat => (
           <CategoryCard
             key={cat.id}
@@ -149,7 +151,8 @@ export default function AppDashboard() {
         ))}
       </div>
 
-      <footer className="py-4 px-10 border-t border-aero-border text-[11px] text-aero-text-dim tracking-[0.06em] flex justify-between font-display">
+      {/* Footer stacks text on mobile instead of overlapping */}
+      <footer className="py-6 md:py-4 px-6 md:px-10 border-t border-aero-border text-[11px] text-aero-text-dim tracking-[0.06em] flex flex-col md:flex-row gap-4 justify-between font-display text-center md:text-left w-full">
         <span>All data stored in IndexedDB · Zero uploads · Zero tracking</span>
         <span>Aero Studio</span>
       </footer>

@@ -1,5 +1,4 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom'; // 1. Import the router hook
+import { useNavigate } from 'react-router-dom';
 
 const TOOLS = [
   {
@@ -29,7 +28,6 @@ const TOOLS = [
       </svg>
     ),
   },
-  
   {
     id: 'compress',
     name: 'Compress',
@@ -37,10 +35,10 @@ const TOOLS = [
     status: 'ready',
     icon: (
       <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
-  <path d="M7 4 L17 4 L21 8 L21 24 L7 24 Z" stroke="currentColor" strokeWidth="1.4" strokeLinejoin="round"/>
-  <path d="M17 4 L17 8 L21 8" stroke="currentColor" strokeWidth="1.4" strokeLinejoin="round"/>
-  <polyline points="12,10 14,12 12,14 14,16 12,18" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
-</svg>
+        <path d="M7 4 L17 4 L21 8 L21 24 L7 24 Z" stroke="currentColor" strokeWidth="1.4" strokeLinejoin="round"/>
+        <path d="M17 4 L17 8 L21 8" stroke="currentColor" strokeWidth="1.4" strokeLinejoin="round"/>
+        <polyline points="12,10 14,12 12,14 14,16 12,18" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
+      </svg>
     ),
   },
   {
@@ -58,205 +56,103 @@ const TOOLS = [
   },
 ];
 
-const ACCENT = '#FF5F1F';
-
-const s = {
-  root: {
-    background: '#0D0D0D',
-    minHeight: '100vh',
-    fontFamily: 'sans-serif',
-    color: '#F5F0EB',
-    padding: '2rem 2.5rem',
-  },
-  topnav: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '12px',
-    marginBottom: '2.5rem',
-  },
-  backBtn: {
-    background: 'transparent',
-    border: '0.5px solid #2A2A2A',
-    color: '#888',
-    padding: '7px 14px',
-    borderRadius: '8px',
-    fontSize: '12px',
-    cursor: 'pointer',
-    display: 'flex',
-    alignItems: 'center',
-    gap: '6px',
-    transition: 'color 0.15s, border-color 0.15s',
-  },
-  breadcrumb: {
-    fontSize: '12px',
-    color: '#3A3A3A',
-    letterSpacing: '0.06em',
-  },
-  breadcrumbActive: {
-    color: '#666',
-  },
-  pageHeader: {
-    marginBottom: '2.5rem',
-  },
-  eyebrow: {
-    fontSize: '10px',
-    letterSpacing: '0.2em',
-    textTransform: 'uppercase',
-    color: ACCENT,
-    marginBottom: '8px',
-    display: 'flex',
-    alignItems: 'center',
-    gap: '6px',
-  },
-  eyebrowDot: {
-    width: '5px',
-    height: '5px',
-    borderRadius: '50%',
-    background: ACCENT,
-  },
-  pageTitle: {
-    fontSize: '28px',
-    fontWeight: 300,
-    letterSpacing: '-0.01em',
-    color: '#F5F0EB',
-    marginBottom: '6px',
-  },
-  pageSubtitle: {
-    fontSize: '13px',
-    color: '#555',
-  },
-  divider: {
-    height: '0.5px',
-    background: '#1E1E1E',
-    margin: '2rem 0',
-  },
-  toolsLabel: {
-    fontSize: '10px',
-    letterSpacing: '0.18em',
-    textTransform: 'uppercase',
-    color: '#3A3A3A',
-    marginBottom: '1rem',
-  },
-  grid: {
-    display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))',
-    gap: '12px',
-  },
-  card: (hovered, ready) => ({
-    background: hovered && ready ? 'rgba(255,95,31,0.06)' : '#111',
-    border: `0.5px solid ${hovered && ready ? ACCENT : '#1E1E1E'}`,
-    borderRadius: '12px',
-    padding: '1.5rem',
-    cursor: ready ? 'pointer' : 'default',
-    transition: 'all 0.2s ease',
-    position: 'relative',
-    opacity: ready ? 1 : 0.5,
-  }),
-  cardIcon: (hovered, ready) => ({
-    width: '50px',
-    height: '50px',
-    borderRadius: '12px',
-    border: `0.5px solid ${hovered && ready ? ACCENT + '55' : '#2A2A2A'}`,
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    color: hovered && ready ? ACCENT : '#444',
-    marginBottom: '1rem',
-    background: hovered && ready ? 'rgba(255,95,31,0.08)' : 'transparent',
-    transition: 'all 0.2s',
-  }),
-  cardName: {
-    fontSize: '15px',
-    fontWeight: 500,
-    color: '#F5F0EB',
-    marginBottom: '6px',
-  },
-  cardDesc: {
-    fontSize: '12px',
-    color: '#555',
-    lineHeight: 1.65,
-  },
-  statusBadge: (ready) => ({
-    position: 'absolute',
-    top: '14px',
-    right: '14px',
-    fontSize: '10px',
-    letterSpacing: '0.1em',
-    textTransform: 'uppercase',
-    padding: '3px 8px',
-    borderRadius: '20px',
-    border: `0.5px solid ${ready ? ACCENT + '55' : '#2A2A2A'}`,
-    color: ready ? ACCENT : '#3A3A3A',
-    background: ready ? 'rgba(255,95,31,0.08)' : 'transparent',
-  }),
-};
-
 function ToolCard({ tool, onClick }) {
-  const [hovered, setHovered] = useState(false);
   const ready = tool.status === 'ready';
 
   return (
     <div
-      style={s.card(hovered, ready)}
       onClick={ready ? onClick : undefined}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
+      className={`relative p-6 rounded-xl border-[0.5px] transition-all duration-200 flex flex-col ${
+        ready
+          ? 'group cursor-pointer bg-[#111] border-[#1E1E1E] hover:bg-[rgba(255,95,31,0.06)] hover:border-aero-accent'
+          : 'cursor-default bg-[#111] border-[#1E1E1E] opacity-50'
+      }`}
     >
-      <span style={s.statusBadge(ready)}>{ready ? 'Ready' : 'Soon'}</span>
-      <div style={s.cardIcon(hovered, ready)}>{tool.icon}</div>
-      <div style={s.cardName}>{tool.name}</div>
-      <div style={s.cardDesc}>{tool.description}</div>
+      {/* Status Badge */}
+      <span 
+        className={`absolute top-3.5 right-3.5 text-[10px] tracking-widest uppercase px-2 py-0.75 rounded-full border-[0.5px] ${
+          ready
+            ? 'border-[#FF5F1F55] text-aero-accent bg-[rgba(255,95,31,0.08)]'
+            : 'border-[#2A2A2A] text-[#3A3A3A] bg-transparent'
+        }`}
+      >
+        {ready ? 'Ready' : 'Soon'}
+      </span>
+
+      {/* Icon Wrap */}
+      <div 
+        className={`w-12.5 h-12.5 rounded-xl border-[0.5px] flex items-center justify-center mb-4 transition-all duration-200 ${
+          ready
+            ? 'border-[#2A2A2A] text-[#444] bg-transparent group-hover:border-[#FF5F1F55] group-hover:text-aero-accent group-hover:bg-[rgba(255,95,31,0.08)]'
+            : 'border-[#2A2A2A] text-[#444] bg-transparent'
+        }`}
+      >
+        {tool.icon}
+      </div>
+
+      <div className="text-[15px] font-medium text-[#F5F0EB] mb-1.5">
+        {tool.name}
+      </div>
+      
+      <div className="text-xs text-[#555] leading-[1.65]">
+        {tool.description}
+      </div>
     </div>
   );
 }
 
-// 2. Remove the old props
 export default function ImagesHub() {
-  const navigate = useNavigate(); // 3. Initialize the hook
-  const [backHovered, setBackHovered] = useState(false);
+  const navigate = useNavigate();
 
   return (
-    <div style={s.root}>
-      <div style={s.topnav}>
+    // Applied min-h-[100dvh] for perfect mobile framing
+    <div className="bg-[#0D0D0D] min-h-dvh font-body text-[#F5F0EB] px-6 py-8 md:px-10">
+      
+      {/* Top Navigation */}
+      <div className="flex items-center gap-3 mb-10">
         <button
-          style={{
-            ...s.backBtn,
-            color: backHovered ? '#F5F0EB' : '#888',
-            borderColor: backHovered ? '#444' : '#2A2A2A',
-          }}
-          // 4. Update back navigation
-            onClick={() => navigate('/')}
-          onMouseEnter={() => setBackHovered(true)}
-          onMouseLeave={() => setBackHovered(false)}
+          onClick={() => navigate('/')}
+          className="bg-transparent border-[0.5px] border-[#2A2A2A] text-[#888] px-3.5 py-1.75 rounded-lg text-xs cursor-pointer flex items-center gap-1.5 transition-colors duration-150 hover:text-[#F5F0EB] hover:border-[#444]"
         >
           ← Back
         </button>
-        <span style={s.breadcrumb}>
-          Aero <span style={s.breadcrumbActive}> / Images</span>
+        <span className="text-xs text-[#3A3A3A] tracking-[0.06em]">
+          Aero <span className="text-[#666]"> / Images</span>
         </span>
       </div>
 
-      <div style={s.pageHeader}>
-        <div style={s.eyebrow}>
-          <span style={s.eyebrowDot} /> Photo & Graphics
+      {/* Page Header */}
+      <div className="mb-10">
+        <div className="text-[10px] tracking-[0.2em] uppercase text-aero-accent mb-2 flex items-center gap-1.5 font-display">
+          <span className="w-1.25 h-1.25 rounded-full bg-aero-accent" /> 
+          Photo & Graphics
         </div>
-        <div style={s.pageTitle}>Images</div>
-        <div style={s.pageSubtitle}>All tools store data locally — nothing is uploaded.</div>
+        <div className="text-[28px] font-light tracking-[-0.01em] text-[#F5F0EB] mb-1.5 font-display">
+          Images
+        </div>
+        <div className="text-[13px] text-[#555]">
+          All tools store data locally — nothing is uploaded.
+        </div>
       </div>
 
-      <div style={s.divider} />
-      <div style={s.toolsLabel}>Available Tools</div>
+      {/* Divider */}
+      <div className="h-[0.5px] bg-[#1E1E1E] my-8" />
+      
+      <div className="text-[10px] tracking-[0.18em] uppercase text-[#3A3A3A] mb-4 font-display">
+        Available Tools
+      </div>
 
-      <div style={s.grid}>
+      {/* Auto-filling Grid */}
+      <div className="grid grid-cols-[repeat(auto-fill,minmax(260px,1fr))] gap-3">
         {TOOLS.map(tool => (
           <ToolCard
             key={tool.id}
             tool={tool}
-            // 5. Update forward navigation to use the absolute path
             onClick={() => navigate(`/images/${tool.id}`)}
           />
         ))}
       </div>
+      
     </div>
   );
 }

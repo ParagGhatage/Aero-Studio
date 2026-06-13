@@ -21,7 +21,7 @@ export default function AeroTopBar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   return (
-    <nav className="sticky top-0 z-50 h-[70px] flex items-center justify-between px-6 md:px-14 border-b border-aero-border bg-black/90 backdrop-blur-md">
+    <nav className="sticky top-0 z-50 h-17.5 flex items-center justify-between px-6 md:px-14 border-b border-aero-border bg-black/90 backdrop-blur-md">
       
       {/* Brand Logo */}
       <Link 
@@ -42,7 +42,7 @@ export default function AeroTopBar() {
             key={path} 
             to={path} 
             className={({ isActive }) => `
-              flex items-center px-5 h-[70px] text-[15px] cursor-pointer font-display font-medium no-underline transition-all duration-200 border-b-2
+              flex items-center px-5 h-17.5 text-[15px] cursor-pointer font-display font-medium no-underline transition-all duration-200 border-b-2
               ${isActive 
                 ? 'text-aero-accent border-aero-accent' 
                 : 'text-aero-text-dim border-transparent hover:text-aero-text'
@@ -83,7 +83,7 @@ export default function AeroTopBar() {
 
       {/* Mobile Dropdown Menu */}
       {isMobileMenuOpen && (
-        <div className="absolute top-[70px] left-0 w-full bg-aero-surface border-b border-aero-border flex flex-col md:hidden px-6 py-6 shadow-2xl gap-4">
+        <div className="absolute top-17.5 left-0 w-full bg-aero-surface border-b border-aero-border flex flex-col md:hidden px-6 py-6 shadow-2xl gap-4">
           
           <div className="flex flex-col gap-2">
             {NAV_TABS.map(({ label, path }) => (
@@ -104,7 +104,7 @@ export default function AeroTopBar() {
             ))}
           </div>
 
-          <div className="h-[1px] bg-aero-border w-full my-2" />
+          <div className="h-px bg-aero-border w-full my-2" />
 
           <div className="flex items-center justify-between px-2">
             <button 
