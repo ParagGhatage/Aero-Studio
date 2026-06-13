@@ -6,7 +6,6 @@ import tailwindcss from '@tailwindcss/vite';
 
 export default defineConfig({
   build: {
-    // This removes the ~75MB chunk of code completely from production
     sourcemap: false, 
     chunkSizeWarningLimit: 1000, 
   },
@@ -18,7 +17,34 @@ export default defineConfig({
 
     VitePWA({
       registerType: 'autoUpdate',
-      // Standard boilerplate configuration
+      
+      workbox: {
+        cleanupOutdatedCaches: true,
+        clientsClaim: true,
+        skipWaiting: true,
+        // ADD THIS: Runtime caching for external Google Fonts
+        runtimeCaching: [
+          {
+            urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'google-fonts-stylesheets',
+              expiration: { maxEntries: 10, maxAgeSeconds: 60 * 60 * 24 * 365 }, // Cache for 1 year
+              cacheableResponse: { statuses: [0, 200] }
+            }
+          },
+          {
+            urlPattern: /^https:\/\/fonts\.gstatic\.com\/.*/i,
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'google-fonts-webfonts',
+              expiration: { maxEntries: 10, maxAgeSeconds: 60 * 60 * 24 * 365 },
+              cacheableResponse: { statuses: [0, 200] }
+            }
+          }
+        ]
+      },
+
       manifest: {
         name: 'Aero Studio',
         short_name: 'AeroStudio',
@@ -28,18 +54,18 @@ export default defineConfig({
         display: 'standalone',
         start_url: '/',
         scope: '/',
-        "icons": [
-  {
-    "src": "/square-image_192.png",
-    "sizes": "192x192",
-    "type": "image/png"
-  },
-  {
-    "src": "/square-image_512.png",
-    "sizes": "512x512",
-    "type": "image/png"
-  }
-]
+        icons: [
+          {
+            src: "/square-image_192.png",
+            sizes: "192x192",
+            type: "image/png"
+          },
+          {
+            src: "/square-image_512.png",
+            sizes: "512x512",
+            type: "image/png"
+          }
+        ]
       }
     })
   ],
