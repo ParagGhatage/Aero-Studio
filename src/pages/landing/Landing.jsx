@@ -68,12 +68,12 @@ function Hero({ navigate }) {
       </div>
 
       {/* 2. Main Title */}
-      <h1 className="font-display text-center text-[clamp(48px,10vw,96px)] font-extrabold leading-[1.05] mb-6 w-full max-w-[1000px] text-aero-text">
+      <h1 className="font-display text-center text-[clamp(48px,10vw,96px)] font-extrabold leading-[1.05] mb-6 w-full max-w-250 text-aero-text">
         Your files,<br /><span className="text-aero-accent">your device.</span>
       </h1>
 
       {/* 3. Subtitle */}
-      <p className="font-display text-center text-[17px] text-aero-text-sub leading-[1.8] mb-12 w-full max-w-[620px] font-normal text-balance">
+      <p className="font-display text-center text-[17px] text-aero-text-sub leading-[1.8] mb-12 w-full max-w-155 font-normal text-balance">
         A local-first creative workspace for images, documents, and video. Nothing ever leaves your device.
       </p>
 
@@ -83,11 +83,11 @@ function Hero({ navigate }) {
       </div>
 
       {/* 5. Stats Grid */}
-      <div className="grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))] gap-12 w-full max-w-[900px] mt-4">
+      <div className="grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))] gap-12 w-full max-w-225 mt-4">
         {[{ value: '3', label: 'Modules' }, { value: '12+', label: 'Tools' }, { value: '∞', label: 'Files' }].map(m => (
           <div key={m.label} className="text-center">
             <div className="font-display text-[clamp(32px,6vw,56px)] font-extrabold text-aero-accent leading-none mb-2">{m.value}</div>
-            <div className="text-sm text-aero-text-dim font-display font-medium uppercase tracking-[0.05em]">{m.label}</div>
+            <div className="text-sm text-aero-text-dim font-display font-medium uppercase tracking-wider">{m.label}</div>
           </div>
         ))}
       </div>
