@@ -1,6 +1,7 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
-import { C, F, GITHUB_URL } from '../pages/landingConstants';
+
+const GITHUB_URL = 'https://github.com/ParagGhatage/Aero-Studio';
 
 const NAV_TABS = [
   { label: 'Features', path: '/features' },
@@ -29,49 +30,53 @@ export default function AeroTopBar() {
   }, []);
 
   return (
-    <nav style={{ position: 'sticky', top: 0, zIndex: 100, height: '70px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 3.5rem', borderBottom: `1px solid ${C.border}`, background: 'rgba(0,0,0,0.90)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)' }}>
-      <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: '12px', textDecoration: 'none', flexShrink: 0 }}>
-        <div style={{ width: '9px', height: '9px', borderRadius: '50%', background: C.accent }} />
-        <span style={{ fontFamily: F.display, fontSize: '17px', fontWeight: 800, color: C.text, letterSpacing: '-0.6px' }}>Aero Studio</span>
+    <nav className="sticky top-0 z-17.5 h-17.5 flex items-center justify-between px-14 border-b border-aero-border bg-black/90 backdrop-blur-md">
+      
+      <Link to="/" className="flex items-center gap-3 no-underline shrink-0">
+        <div className="w-2.25 h-2.25 rounded-full bg-aero-accent" />
+        <span className="font-display text-[17px] font-extrabold text-aero-text tracking-[-0.6px]">
+          Aero Studio
+        </span>
       </Link>
 
-      <div style={{ display: 'flex', alignItems: 'center' }}>
+      <div className="flex items-center">
         {NAV_TABS.map(({ label, path }) => (
-          <NavLink key={path} to={path} style={({ isActive }) => ({
-            display: 'flex',
-            alignItems: 'center',
-            padding: '0 20px',
-            height: '70px',
-            fontSize: '15px',
-            cursor: 'pointer',
-            color: isActive ? C.accent : C.textDim,
-            borderBottom: `2px solid ${isActive ? C.accent : 'transparent'}`,
-            fontFamily: F.display,
-            fontWeight: 500,
-            textDecoration: 'none',
-            transition: 'all 0.2s',
-          })}>
+          <NavLink 
+            key={path} 
+            to={path} 
+            className={({ isActive }) => `
+              flex items-center px-5 h-17.5 text-[15px] cursor-pointer font-display font-medium no-underline transition-all duration-200 border-b-2
+              ${isActive 
+                ? 'text-aero-accent border-aero-accent' 
+                : 'text-aero-text-dim border-transparent hover:text-aero-text'
+              }
+            `}
+          >
             {label}
           </NavLink>
         ))}
       </div>
 
-      <div style={{ display: 'flex', alignItems: 'center', gap: '18px', flexShrink: 0 }}>
-        <button onClick={() => window.open(GITHUB_URL)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: C.textSub, padding: '0 8px', transition: 'color 0.2s' }}
-          onMouseEnter={(e) => e.currentTarget.style.color = C.text}
-          onMouseLeave={(e) => e.currentTarget.style.color = C.textSub}>
+      <div className="flex items-center gap-4.5 shrink-0">
+        <button 
+          onClick={() => window.open(GITHUB_URL, '_blank', 'noopener,noreferrer')} 
+          className="bg-transparent border-none cursor-pointer text-aero-text-sub px-2 transition-colors duration-200 hover:text-aero-text"
+        >
           <GitHubIcon />
         </button>
         <NavCTA navigate={navigate} />
       </div>
+      
     </nav>
   );
 }
 
 function NavCTA({ navigate }) {
-  const [hov, setHov] = useState(false);
   return (
-    <button onClick={() => navigate('/app')} onMouseEnter={() => setHov(true)} onMouseLeave={() => setHov(false)} style={{ background: hov ? C.accentHover : C.accent, border: 'none', padding: '10px 26px', borderRadius: '6px', color: '#000000', fontFamily: F.display, fontWeight: 700, fontSize: '15px', cursor: 'pointer', transition: 'all 0.2s', transform: hov ? 'translateY(-1px)' : 'none' }}>
+    <button 
+      onClick={() => navigate('/app')} 
+      className="bg-aero-accent hover:bg-aero-accent-hover border-none px-6.5 py-2.5 rounded-md text-black font-display font-bold text-[15px] cursor-pointer transition-all duration-200 hover:-translate-y-px"
+    >
       Get Started
     </button>
   );

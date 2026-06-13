@@ -1,5 +1,3 @@
-import { C, F } from '../landingConstants';
-
 const PRIVACY_ITEMS = [
   { title: 'Zero data collection', body: 'No analytics, telemetry, or crash reports. There is no instrumentation code in Aero Studio — not a single event is tracked.' },
   { title: 'Local storage only', body: "All files, thumbnails, and metadata are stored in your browser's IndexedDB. Nothing is ever transmitted to a server." },
@@ -8,30 +6,49 @@ const PRIVACY_ITEMS = [
 ];
 
 const CheckIcon = () => (
-  <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-    <path d="M3 8 L6.5 11.5 L13 5" stroke={C.accent} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="text-aero-accent">
+    <path d="M3 8 L6.5 11.5 L13 5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
   </svg>
 );
 
 export default function LandingPrivacy() {
   return (
-    <div style={{ maxWidth: '800px', margin: '0 auto' }}>
-      <div style={{ fontFamily: F.display, fontSize: '13px', color: C.textDim, marginBottom: '1.5rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Privacy Policy</div>
-      <h2 style={{ fontFamily: F.display, fontSize: 'clamp(36px, 5vw, 52px)', fontWeight: 700, color: C.text, marginBottom: '10px', lineHeight: 1.1 }}>We collect nothing</h2>
-      <div style={{ fontSize: '13px', color: C.textDim, fontFamily: F.display, marginBottom: '3.5rem' }}>Last updated: June 2025</div>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '1px', background: C.border, marginBottom: '2.5rem' }}>
+    <div className="max-w-200 mx-auto">
+      
+      <div className="font-display text-[13px] text-aero-text-dim mb-6 uppercase tracking-[0.5px]">
+        Privacy Policy
+      </div>
+      
+      <h2 className="font-display text-[clamp(36px,5vw,52px)] font-bold text-aero-text mb-2.5 leading-[1.1]">
+        We collect nothing
+      </h2>
+      
+      <div className="text-[13px] text-aero-text-dim font-display mb-14">
+        Last updated: June 2026
+      </div>
+      
+      {/* 1px gap trick for the borders */}
+      <div className="flex flex-col gap-px bg-aero-border mb-10">
         {PRIVACY_ITEMS.map((item, i) => (
-          <div key={i} style={{ background: C.surface, padding: '2.5rem', display: 'flex', gap: '1.75rem', alignItems: 'flex-start' }}>
-            <div style={{ width: '36px', height: '36px', borderRadius: '50%', border: `0.5px solid ${C.accentBorder}`, background: C.accentGlow, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, marginTop: '4px' }}>
+          <div key={i} className="bg-aero-surface p-10 flex gap-7 items-start">
+            
+            <div className="w-9 h-9 rounded-full border-[0.5px] border-aero-accent-border bg-aero-accent-glow flex items-center justify-center shrink-0 mt-1">
               <CheckIcon />
             </div>
+            
             <div>
-              <div style={{ fontFamily: F.display, fontWeight: 700, fontSize: '16px', color: C.text, marginBottom: '10px' }}>{item.title}</div>
-              <div style={{ fontSize: '15px', color: C.textSub, lineHeight: 1.8 }}>{item.body}</div>
+              <div className="font-display font-bold text-base text-aero-text mb-2.5">
+                {item.title}
+              </div>
+              <div className="text-[15px] text-aero-text-sub leading-[1.8]">
+                {item.body}
+              </div>
             </div>
+            
           </div>
         ))}
       </div>
+      
     </div>
   );
 }

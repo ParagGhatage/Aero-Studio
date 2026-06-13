@@ -1,6 +1,4 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom'; // 1. Import the hook
-import { C, F } from './landingConstants';
+import { useNavigate } from 'react-router-dom';
 
 const CATEGORIES = [
   {
@@ -9,8 +7,10 @@ const CATEGORIES = [
     tag: 'Photo & Graphics',
     description: 'Organise, view and edit your photos. Drag-and-drop import, albums, and a full-screen viewer — all stored locally.',
     tools: ['Gallery', 'Slideshow', 'Metadata', 'Batch Resize'],
-    accentColor: C.accent,
+    accentColor: '#FF5F1F',
     glowColor: 'rgba(255,95,31,0.18)',
+    iconBg: '#FF5F1F12',
+    chipBorder: '#FF5F1F55',
     icon: (
       <svg width="52" height="52" viewBox="0 0 52 52" fill="none">
         <rect x="4" y="10" width="38" height="30" rx="3" stroke="currentColor" strokeWidth="1.5"/>
@@ -27,8 +27,10 @@ const CATEGORIES = [
     tag: 'Documents',
     description: 'View, merge, split and extract text from PDF files. Handle multi-page documents without any uploads to the cloud.',
     tools: ['Viewer', 'Merger', 'Splitter', 'Text Extract'],
-    accentColor: C.teal,
+    accentColor: '#4ECDC4',
     glowColor: 'rgba(78,205,196,0.15)',
+    iconBg: '#4ECDC412',
+    chipBorder: '#4ECDC455',
     icon: (
       <svg width="52" height="52" viewBox="0 0 52 52" fill="none">
         <rect x="8" y="4" width="30" height="38" rx="3" stroke="currentColor" strokeWidth="1.5"/>
@@ -47,8 +49,10 @@ const CATEGORIES = [
     tag: 'Media',
     description: 'Play, trim and capture frames from local video files. Supports all major formats with keyboard-driven controls.',
     tools: ['Player', 'Frame Capture', 'Clip Trim', 'Subtitles'],
-    accentColor: C.violet,
+    accentColor: '#A78BFA',
     glowColor: 'rgba(167,139,250,0.15)',
+    iconBg: '#A78BFA12',
+    chipBorder: '#A78BFA55',
     icon: (
       <svg width="52" height="52" viewBox="0 0 52 52" fill="none">
         <rect x="4" y="10" width="36" height="28" rx="3" stroke="currentColor" strokeWidth="1.5"/>
@@ -60,196 +64,83 @@ const CATEGORIES = [
   },
 ];
 
-const s = {
-  root: {
-    background: C.bg,
-    minHeight: 'calc(100vh - 70px)',
-    fontFamily: F.body,
-    color: C.text,
-    display: 'flex',
-    flexDirection: 'column',
-    padding: '0',
-    overflow: 'hidden',
-  },
-  hero: {
-    padding: '3rem 2.5rem 2rem',
-    maxWidth: '620px',
-  },
-  heroEyebrow: {
-    fontSize: '11px',
-    letterSpacing: '0.18em',
-    textTransform: 'uppercase',
-    color: C.textDim,
-    marginBottom: '12px',
-    fontFamily: F.display,
-    fontWeight: 500,
-  },
-  heroTitle: {
-    fontSize: '36px',
-    fontWeight: 700,
-    letterSpacing: '0',
-    color: C.text,
-    lineHeight: 1.15,
-    marginBottom: '12px',
-    fontFamily: F.display,
-  },
-  heroSubtitle: {
-    fontSize: '14px',
-    color: C.textSub,
-    lineHeight: 1.6,
-  },
-  grid: {
-    flex: 1,
-    display: 'grid',
-    gridTemplateColumns: 'repeat(3, 1fr)',
-    gap: '0',
-    borderTop: `1px solid ${C.border}`,
-  },
-  card: (accent, glow, hovered) => ({
-    position: 'relative',
-    padding: '2.5rem',
-    borderRight: `1px solid ${C.border}`,
-    cursor: 'pointer',
-    transition: 'background 0.25s ease',
-    background: hovered ? glow : 'transparent',
-    display: 'flex',
-    flexDirection: 'column',
-    minHeight: '320px',
-  }),
-  cardTopBar: (accent, hovered) => ({
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    height: '2px',
-    background: accent,
-    transform: hovered ? 'scaleX(1)' : 'scaleX(0)',
-    transformOrigin: 'left',
-    transition: 'transform 0.3s ease',
-  }),
-  iconWrap: (accent, hovered) => ({
-    width: '70px',
-    height: '70px',
-    borderRadius: '16px',
-    border: `1px solid ${hovered ? accent : C.borderEmphasis}`,
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: '1.5rem',
-    color: hovered ? accent : C.textDim,
-    transition: 'all 0.2s ease',
-    background: hovered ? `${accent}12` : 'transparent',
-  }),
-  cardTag: (accent, hovered) => ({
-    fontSize: '10px',
-    letterSpacing: '0.18em',
-    textTransform: 'uppercase',
-    color: hovered ? accent : C.textDim,
-    marginBottom: '8px',
-    transition: 'color 0.2s',
-  }),
-  cardTitle: {
-    fontSize: '26px',
-    fontWeight: 400,
-    color: C.text,
-    marginBottom: '12px',
-    letterSpacing: '-0.01em',
-  },
-  cardDesc: {
-    fontSize: '13px',
-    color: C.textSub,
-    lineHeight: 1.7,
-    flex: 1,
-  },
-  toolChips: {
-    display: 'flex',
-    flexWrap: 'wrap',
-    gap: '6px',
-    marginTop: '1.5rem',
-  },
-  chip: (accent, hovered) => ({
-    fontSize: '11px',
-    padding: '4px 10px',
-    borderRadius: '20px',
-    border: `1px solid ${hovered ? accent + '55' : C.borderEmphasis}`,
-    color: hovered ? accent : C.textDim,
-    transition: 'all 0.2s',
-    letterSpacing: '0.02em',
-  }),
-  cardArrow: (accent, hovered) => ({
-    marginTop: '1.5rem',
-    fontSize: '13px',
-    color: hovered ? accent : C.textDim,
-    transition: 'all 0.2s',
-    display: 'flex',
-    alignItems: 'center',
-    gap: '6px',
-    letterSpacing: '0.04em',
-    transform: hovered ? 'translateX(4px)' : 'translateX(0)',
-    fontWeight: 500,
-  }),
-  footer: {
-    padding: '1rem 2.5rem',
-    borderTop: `1px solid ${C.border}`,
-    fontSize: '11px',
-    color: C.textDim,
-    letterSpacing: '0.06em',
-    display: 'flex',
-    justifyContent: 'space-between',
-    fontFamily: F.display,
-  },
-};
-
 function CategoryCard({ cat, onClick }) {
-  const [hovered, setHovered] = useState(false);
+  // Notice: The useState for hover is gone!
   return (
     <div
-      style={s.card(cat.accentColor, cat.glowColor, hovered)}
+      style={{
+        '--card-accent': cat.accentColor,
+        '--card-glow': cat.glowColor,
+        '--icon-bg': cat.iconBg,
+        '--chip-border': cat.chipBorder
+      }}
+      className="group relative p-10 border-r border-aero-border cursor-pointer transition-colors duration-200 flex flex-col min-h-80 hover:bg-(--card-glow)"
       onClick={onClick}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
     >
-      <div style={s.cardTopBar(cat.accentColor, hovered)} />
-      <div style={s.iconWrap(cat.accentColor, hovered)}>{cat.icon}</div>
-      <div style={s.cardTag(cat.accentColor, hovered)}>{cat.tag}</div>
-      <div style={s.cardTitle}>{cat.label}</div>
-      <div style={s.cardDesc}>{cat.description}</div>
-      <div style={s.toolChips}>
+      {/* Top animating border line */}
+      <div className="absolute top-0 left-0 right-0 h-0.5 bg-(--card-accent) scale-x-0 origin-left transition-transform duration-300 group-hover:scale-x-100" />
+      
+      {/* Icon Wrap */}
+      <div className="w-17.5 h-17.5 rounded-2xl border border-aero-border-emphasis flex items-center justify-center mb-6 text-aero-text-dim transition-all duration-200 group-hover:border-(--card-accent) group-hover:text-(--card-accent) group-hover:bg-(--icon-bg)">
+        {cat.icon}
+      </div>
+
+      <div className="text-[10px] tracking-[0.18em] uppercase text-aero-text-dim mb-2 transition-colors duration-200 group-hover:text-(--card-accent)]">
+        {cat.tag}
+      </div>
+      
+      <div className="text-[26px] font-normal text-aero-text mb-3 tracking-[-0.01em]">
+        {cat.label}
+      </div>
+      
+      <div className="text-[13px] text-aero-text-sub leading-[1.7] flex-1">
+        {cat.description}
+      </div>
+      
+      <div className="flex flex-wrap gap-1.5 mt-6">
         {cat.tools.map(t => (
-          <span key={t} style={s.chip(cat.accentColor, hovered)}>{t}</span>
+          <span 
+            key={t} 
+            className="text-[11px] px-2.5 py-1 rounded-full border border-aero-border-emphasis text-aero-text-dim transition-all duration-200 tracking-[0.02em] group-hover:border-(--chip-border) group-hover:text-(--card-accent)"
+          >
+            {t}
+          </span>
         ))}
       </div>
-      <div style={s.cardArrow(cat.accentColor, hovered)}>
+      
+      <div className="mt-6 text-[13px] text-aero-text-dim font-medium transition-all duration-200 flex items-center gap-1.5 tracking-[0.04em] group-hover:text-(--card-accent) group-hover:translate-x-1">
         Open {cat.label} <span>→</span>
       </div>
+      
     </div>
   );
 }
 
-// 2. Remove the old onNavigate prop
 export default function AppDashboard() {
-  const navigate = useNavigate(); // 3. Initialize the router hook
+  const navigate = useNavigate();
 
   return (
-    <div style={s.root}>
-      <div style={s.hero}>
-        <div style={s.heroEyebrow}>Multimedia Workspace</div>
-        <div style={s.heroTitle}>
+    <div className="bg-aero-bg min-h-[calc(100vh-70px)] font-body text-aero-text flex flex-col p-0 overflow-hidden">
+      
+      <div className="pt-12 px-10 pb-8 max-w-155">
+        <div className="text-[11px] tracking-[0.18em] uppercase text-aero-text-dim mb-3 font-display font-medium">
+          Multimedia Workspace
+        </div>
+        <div className="text-[36px] font-bold text-aero-text leading-[1.15] mb-3 font-display">
           Your files,<br />your device.
         </div>
-        <div style={s.heroSubtitle}>
+        <div className="text-[14px] text-aero-text-sub leading-[1.6]">
           A local-first toolbox for images, documents, and video.
           Nothing leaves your browser.
         </div>
       </div>
 
-      <div style={s.grid}>
+      <div className="flex-1 grid grid-cols-3 gap-0 border-t border-aero-border">
         {CATEGORIES.map(cat => (
           <CategoryCard
             key={cat.id}
             cat={cat}
             onClick={() => {
-              // Only trigger the router if the ID is 'images'
               if (cat.id === 'images') {
                 navigate(`/${cat.id}`);
               }
@@ -258,10 +149,11 @@ export default function AppDashboard() {
         ))}
       </div>
 
-      <footer style={s.footer}>
+      <footer className="py-4 px-10 border-t border-aero-border text-[11px] text-aero-text-dim tracking-[0.06em] flex justify-between font-display">
         <span>All data stored in IndexedDB · Zero uploads · Zero tracking</span>
         <span>Aero Studio</span>
       </footer>
+      
     </div>
   );
 }

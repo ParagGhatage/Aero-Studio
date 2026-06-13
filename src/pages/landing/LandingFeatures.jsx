@@ -1,5 +1,4 @@
 import { useNavigate } from 'react-router-dom';
-import { C, F } from '../landingConstants';
 
 const FEATURES = [
   {
@@ -25,25 +24,47 @@ const FEATURES = [
 export default function LandingFeatures() {
   const navigate = useNavigate();
   return (
-    <div style={{ maxWidth: '1300px', margin: '0 auto' }}>
-      <div style={{ marginBottom: '5rem' }}>
-        <div style={{ fontFamily: F.display, fontSize: '13px', color: C.textDim, marginBottom: '1.5rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Core Capabilities</div>
-        <h2 style={{ fontFamily: F.display, fontSize: 'clamp(36px, 5vw, 56px)', fontWeight: 700, color: C.text, margin: 0, lineHeight: 1.1 }}>Three modules.<br />One workspace.</h2>
+    <div className="max-w-325 mx-auto">
+      
+      <div className="mb-20">
+        <div className="font-display text-[13px] text-aero-text-dim mb-6 uppercase tracking-[0.5px]">
+          Core Capabilities
+        </div>
+        <h2 className="font-display text-[clamp(36px,5vw,56px)] font-bold text-aero-text m-0 leading-[1.1]">
+          Three modules.<br />One workspace.
+        </h2>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '3rem', marginBottom: '6rem' }}>
+      <div className="grid grid-cols-1 gap-12 mb-24">
         {FEATURES.map((f, idx) => (
-          <div key={f.id} style={{ display: 'grid', gridTemplateColumns: '120px 1fr', gap: '4rem', alignItems: 'start', cursor: 'pointer' }} onClick={() => navigate(`/${f.id}`)}>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-              <div style={{ fontFamily: F.display, fontSize: '56px', fontWeight: 800, color: C.accent, lineHeight: 1 }}>{String(idx + 1).padStart(2, '0')}</div>
-              <div style={{ fontFamily: F.display, fontSize: '12px', fontWeight: 600, color: C.textDim, textTransform: 'uppercase', letterSpacing: '0.5px' }}>{f.tag}</div>
+          <div 
+            key={f.id} 
+            className="grid grid-cols-[120px_1fr] gap-16 items-start cursor-pointer hover:opacity-90 transition-opacity" 
+            onClick={() => navigate(`/${f.id}`)}
+          >
+            <div className="flex flex-col gap-4">
+              <div className="font-display text-[56px] font-extrabold text-aero-accent leading-none">
+                {String(idx + 1).padStart(2, '0')}
+              </div>
+              <div className="font-display text-xs font-semibold text-aero-text-dim uppercase tracking-[0.5px]">
+                {f.tag}
+              </div>
             </div>
-            <div style={{ paddingTop: '0.5rem' }}>
-              <h3 style={{ fontFamily: F.display, fontSize: '32px', fontWeight: 700, color: C.text, margin: '0 0 1rem 0', lineHeight: 1.2 }}>{f.label}</h3>
-              <p style={{ fontSize: '16px', color: C.textSub, lineHeight: 1.8, margin: '0 0 1.5rem 0', maxWidth: '600px' }}>{f.description}</p>
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+            <div className="pt-2">
+              <h3 className="font-display text-[32px] font-bold text-aero-text mb-4 leading-[1.2]">
+                {f.label}
+              </h3>
+              <p className="text-base text-aero-text-sub leading-[1.8] mb-6 max-w-150">
+                {f.description}
+              </p>
+              <div className="flex flex-wrap gap-2">
                 {f.tools.map(t => (
-                  <span key={t} style={{ fontSize: '12px', padding: '5px 12px', borderRadius: '4px', border: `0.5px solid ${C.borderEmphasis}`, color: C.textSub, fontFamily: F.display }}>{t}</span>
+                  <span 
+                    key={t} 
+                    className="text-xs px-3 py-1.25 rounded border-[0.5px] border-aero-border-emphasis text-aero-text-sub font-display"
+                  >
+                    {t}
+                  </span>
                 ))}
               </div>
             </div>
@@ -51,20 +72,34 @@ export default function LandingFeatures() {
         ))}
       </div>
 
-      <div style={{ paddingTop: '4rem', borderTop: `1px solid ${C.border}` }}>
-        <h3 style={{ fontFamily: F.display, fontSize: '24px', fontWeight: 700, color: C.text, margin: '0 0 3rem 0' }}>Built for privacy</h3>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '2rem' }}>
-          {[{ icon: '◈', label: 'Offline-first' }, { icon: '◇', label: 'IndexedDB storage' }, { icon: '○', label: 'No server required' }, { icon: '◉', label: 'Zero accounts' }].map(item => (
-            <div key={item.label} style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
-              <span style={{ color: C.accent, fontSize: '20px', fontFamily: F.display, marginTop: '2px' }}>{item.icon}</span>
+      <div className="pt-16 border-t border-aero-border">
+        <h3 className="font-display text-2xl font-bold text-aero-text mb-12">
+          Built for privacy
+        </h3>
+        <div className="grid grid-cols-[repeat(auto-fit,minmax(240px,1fr))] gap-8">
+          {[
+            { icon: '◈', label: 'Offline-first' }, 
+            { icon: '◇', label: 'IndexedDB storage' }, 
+            { icon: '○', label: 'No server required' }, 
+            { icon: '◉', label: 'Zero accounts' }
+          ].map(item => (
+            <div key={item.label} className="flex items-start gap-3">
+              <span className="text-aero-accent text-[20px] font-display mt-0.5">
+                {item.icon}
+              </span>
               <div>
-                <span style={{ fontFamily: F.display, fontSize: '15px', fontWeight: 600, color: C.text, display: 'block', marginBottom: '4px' }}>{item.label}</span>
-                <span style={{ fontSize: '13px', color: C.textDim }}>Keep full control of your data</span>
+                <span className="font-display text-[15px] font-semibold text-aero-text block mb-1">
+                  {item.label}
+                </span>
+                <span className="text-[13px] text-aero-text-dim">
+                  Keep full control of your data
+                </span>
               </div>
             </div>
           ))}
         </div>
       </div>
+      
     </div>
   );
 }

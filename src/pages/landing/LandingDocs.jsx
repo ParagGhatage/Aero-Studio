@@ -1,5 +1,4 @@
 import { useNavigate, useOutletContext } from 'react-router-dom';
-import { C, F } from '../landingConstants';
 import { Btn } from './Landing';
 
 const DOCS_STEPS = [
@@ -14,31 +13,57 @@ export default function LandingDocs() {
   const { deferredPrompt, installed, handleInstall } = useOutletContext();
 
   return (
-    <div style={{ maxWidth: '800px', margin: '0 auto' }}>
-      <div style={{ fontFamily: F.display, fontSize: '13px', color: C.textDim, marginBottom: '1.5rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Documentation</div>
-      <h2 style={{ fontFamily: F.display, fontSize: 'clamp(36px, 5vw, 52px)', fontWeight: 700, color: C.text, marginBottom: '4rem', lineHeight: 1.1 }}>Getting started in minutes</h2>
+    <div className="max-w-200 mx-auto">
+      
+      <div className="font-display text-[13px] text-aero-text-dim mb-6 uppercase tracking-[0.5px]">
+        Documentation
+      </div>
+      
+      <h2 className="font-display text-[clamp(36px,5vw,52px)] font-bold text-aero-text mb-16 leading-[1.1]">
+        Getting started in minutes
+      </h2>
 
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '1px', background: C.border, marginBottom: '3rem' }}>
+      {/* This container uses the border color as its background, 
+        and the 1px gap reveals it between the items below to create 1px borders. 
+      */}
+      <div className="flex flex-col gap-px bg-aero-border mb-12">
         {DOCS_STEPS.map(step => (
-          <div key={step.n} style={{ background: C.surface, padding: '2.75rem', display: 'flex', gap: '2.5rem', alignItems: 'flex-start' }}>
-            <div style={{ fontFamily: F.display, fontSize: '13px', fontWeight: 700, color: C.accent, paddingTop: '4px', flexShrink: 0, width: '28px' }}>{step.n}</div>
+          <div key={step.n} className="bg-aero-surface p-11 flex gap-10 items-start">
+            <div className="font-display text-[13px] font-bold text-aero-accent pt-1 shrink-0 w-7">
+              {step.n}
+            </div>
             <div>
-              <div style={{ fontFamily: F.display, fontWeight: 700, fontSize: '16px', color: C.text, marginBottom: '10px' }}>{step.title}</div>
-              <div style={{ fontSize: '15px', color: C.textSub, lineHeight: 1.8 }}>{step.body}</div>
+              <div className="font-display font-bold text-base text-aero-text mb-2.5">
+                {step.title}
+              </div>
+              <div className="text-[15px] text-aero-text-sub leading-[1.8]">
+                {step.body}
+              </div>
             </div>
           </div>
         ))}
       </div>
 
-      <div style={{ padding: '2.5rem', background: C.accentGlow, border: `0.5px solid ${C.accentBorder}`, borderRadius: '8px' }}>
-        <div style={{ fontFamily: F.display, fontWeight: 700, fontSize: '16px', color: C.text, marginBottom: '12px' }}>Install as PWA</div>
-        <div style={{ fontSize: '15px', color: C.textSub, lineHeight: 1.8, marginBottom: '1.75rem' }}>Get a native-like app window with full offline support. Works on Chrome, Edge, and Safari (iOS 16.4+).</div>
-        <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
+      <div className="p-10 bg-aero-accent-glow border-[0.5px] border-aero-accent-border rounded-lg">
+        <div className="font-display font-bold text-base text-aero-text mb-3">
+          Install as PWA
+        </div>
+        <div className="text-[15px] text-aero-text-sub leading-[1.8] mb-7">
+          Get a native-like app window with full offline support. Works on Chrome, Edge, and Safari (iOS 16.4+).
+        </div>
+        <div className="flex gap-3 flex-wrap">
           <Btn onClick={() => navigate('/app')} solid>Open App →</Btn>
-          {deferredPrompt && !installed && <Btn onClick={handleInstall}>Install App ↓</Btn>}
-          {installed && <span style={{ padding: '10px 0', fontSize: '14px', color: C.teal, fontFamily: F.display }}>✓ Installed successfully</span>}
+          {deferredPrompt && !installed && (
+            <Btn onClick={handleInstall}>Install App ↓</Btn>
+          )}
+          {installed && (
+            <span className="py-2.5 text-sm text-[#4ECDC4] font-display">
+              ✓ Installed successfully
+            </span>
+          )}
         </div>
       </div>
+      
     </div>
   );
 }
