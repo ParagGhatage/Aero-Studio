@@ -3,7 +3,6 @@ import react, { reactCompilerPreset } from '@vitejs/plugin-react'
 import babel from '@rolldown/plugin-babel'
 import { VitePWA } from 'vite-plugin-pwa';
 import tailwindcss from '@tailwindcss/vite';
-import Sitemap from 'vite-plugin-sitemap'
 
 export default defineConfig({
   build: {
@@ -15,21 +14,7 @@ export default defineConfig({
     react(),
     babel({ presets: [reactCompilerPreset()] }),
     tailwindcss(),
-    Sitemap({
-      hostname: 'https://aerostudio.xyz',
-      dynamicRoutes: [
-        '/',
-        '/features',
-        '/about',
-        '/privacy',
-        '/docs',
-        '/app',
-        '/images',
-        '/images/gallery/albums',
-        '/images/crop',
-        '/images/compress'
-      ] 
-    }),
+
     VitePWA({
       registerType: 'autoUpdate',
       
