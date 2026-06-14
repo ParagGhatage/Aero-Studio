@@ -19,14 +19,15 @@
   --font-display: 'Roboto Mono', monospace;
   --font-body: 'Roboto Mono', monospace;
   --font-mono: 'Roboto Mono', monospace;
+
+  --animate-slide-in: slideIn 0.3s cubic-bezier(0.2, 0, 0, 1);
+  @keyframes slideIn {
+    from { transform: translateX(100%); }
+    to { transform: translateX(0); }
+  }
+
 }
 
-/* ===============================================================
-  LEGACY CSS BELOW 
-  (The restrictive #root and body margins have been removed so 
-  Tailwind can handle your layouts properly)
-  ===============================================================
-*/
 
 :root {
   --text: #6b6375;
