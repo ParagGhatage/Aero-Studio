@@ -5,31 +5,21 @@ import { useGlobalMedia } from '../../../Context/GlobalMediaContext';
 import { db } from '../../../db';
 import Albums from './Albums';
 
-
 // Memory-Safe & Render-Optimized Blob Renderer
 const BlobImage = ({ blob, alt, className }) => {
   const imgRef = useRef(null);
 
   useEffect(() => {
-    // If there's no blob or the image element isn't in the DOM yet, do nothing
     if (!blob || !imgRef.current) return;
-
-    // Create the memory URL
     const objectUrl = URL.createObjectURL(blob);
-    
-    // Mutate the DOM directly, bypassing React's render cycle
     imgRef.current.src = objectUrl;
-
-    // Clean up memory when the blob changes or component unmounts
     return () => URL.revokeObjectURL(objectUrl);
   }, [blob]);
 
-  // If there is no blob data, render the dark placeholder fallback
   if (!blob) {
     return <div className={className} style={{ background: '#1F1F1F' }} />;
   }
 
-  // Otherwise, render the image tag and attach the ref
   return <img ref={imgRef} alt={alt} className={className} />;
 };
 
@@ -47,14 +37,12 @@ export default function Gallery() {
   const [infoDimensions, setInfoDimensions] = useState(null);
   const clickTimerRef = useRef(null);
 
-  // Cleanup click timer on unmount
   useEffect(() => {
     return () => {
       if (clickTimerRef.current) clearTimeout(clickTimerRef.current);
     };
   }, []);
 
-  // Resolve image dimensions whenever infoImage changes
   useEffect(() => {
     if (!infoImage?.fileBlob) return;
 
@@ -93,26 +81,18 @@ export default function Gallery() {
     setSelectedImages(new Set());
   }
 
-  
   const displayedImages = currentAlbum 
     ? allImages.filter(img => img.album === currentAlbum) 
     : allImages;
-  // --- DERIVE VIEWING IMAGE FROM URL ---
+  
   const viewingImage = viewId ? allImages.find(img => img.id.toString() === viewId) : null;
 
-  // --- VIEWER NAVIGATION HELPERS ---
   const openViewer = useCallback((img) => {
-    setSearchParams(prev => {
-      prev.set('v', img.id);
-      return prev;
-    });
+    setSearchParams(prev => { prev.set('v', img.id); return prev; });
   }, [setSearchParams]);
 
   const closeViewer = useCallback(() => {
-    setSearchParams(prev => {
-      prev.delete('v');
-      return prev;
-    });
+    setSearchParams(prev => { prev.delete('v'); return prev; });
   }, [setSearchParams]);
 
   const processFiles = async (files, targetAlbum = 'Default') => {
@@ -166,7 +146,6 @@ export default function Gallery() {
   const hasPrev = currentIndex > 0;
   const hasNext = currentIndex !== -1 && currentIndex < displayedImages.length - 1;
 
-  // 2. Add openViewer to the dependency arrays here
   const showPrev = useCallback((e) => {
     if (e) e.stopPropagation();
     if (hasPrev) openViewer(displayedImages[currentIndex - 1]);
@@ -177,7 +156,6 @@ export default function Gallery() {
     if (hasNext) openViewer(displayedImages[currentIndex + 1]);
   }, [hasNext, displayedImages, currentIndex, openViewer]);
 
-  // 3. Add closeViewer to the dependency array here
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (!viewingImage) return;
@@ -231,7 +209,7 @@ export default function Gallery() {
         {showCheckbox && (
           <div
             className={`absolute top-2 left-2 z-10 w-5.5 h-5.5 rounded border-2 flex items-center justify-center cursor-pointer transition-all duration-200 hover:scale-110 ${
-              isSelected ? 'bg-aero-accent border-aero-accent' : 'bg-black/40 border-white/80'
+              isSelected ? 'bg-[#ff5f1f] border-[#ff5f1f]' : 'bg-black/40 border-white/80'
             }`}
             onClick={(e) => toggleSelectImage(img.id, e)}
           >
@@ -260,153 +238,148 @@ export default function Gallery() {
   };
 
   return (
+    // Outer App Container - No dynamic padding here anymore!
     <div 
-      className={`bg-[#0D0D0D] min-h-screen font-sans text-[#F5F0EB] px-4 md:px-8 py-5 md:py-10 box-border transition-all duration-200 ${
-        infoImage ? 'lg:pr-91 pb-105 lg:pb-10' : ''
-      }`} 
+      className="h-dvh bg-[#0d0d0d] text-[#f5f0eb] flex flex-col font-sans overflow-hidden" 
       onDragOver={(e) => e.preventDefault()} 
       onDrop={handleDrop}
     >
       
-      <header className="flex flex-col md:flex-row justify-between items-start md:items-center mb-35 pb-4.5 border-b border-[#2A2A2A] gap-3.5 md:gap-0">
-        <div className="flex flex-col md:flex-row items-start md:items-center gap-3.5 md:gap-5 min-w-0">
-          <button 
-            className="group bg-[#141414] border border-[#2A2A2A] text-[#888] px-3 py-2 md:pl-2.25 md:pr-3 rounded-[7px] text-xs font-medium cursor-pointer flex items-center gap-1.5 transition-all duration-200 hover:bg-white/5 hover:border-[#4A4A4A] hover:text-[#F5F0EB]" 
-            onClick={() => navigate('/images')}
-          >
-            <svg className="transition-transform duration-200 group-hover:-translate-x-0.75" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M19 12H5M12 19l-7-7 7-7"/>
-            </svg>
-            Image Studio
-          </button>
+      <header className="flex items-center justify-between p-3 sm:p-4 shrink-0 border-b border-[#222] gap-2">
+        {/* Left Side: Back button + Title */}
+<div className="flex items-center gap-2 sm:gap-3 flex-1 min-w-0">
+  <button 
+    className="bg-transparent border-none text-[#f5f0eb] cursor-pointer hover:text-[#ff5f1f] transition-colors p-1 flex items-center justify-center shrink-0" 
+    onClick={() => navigate('/images')}
+  >
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="m15 18-6-6 6-6"/></svg>
+  </button>
+  
+  {/* FIX: Added leading-normal and py-1 to prevent the text from being horizontally sliced */}
+  <h1 className="text-[18px] lg:text-[24px] font-medium m-0 leading-normal py-1 truncate">
+    {currentAlbum ? currentAlbum : (activeTab === 'albums' ? 'Albums' : 'My Photos')}
+  </h1>
+  
+  {!currentAlbum && (
+    <span className="text-[#555] text-[13px] ml-2 hidden md:inline shrink-0">
+      {allImages.length} image{allImages.length !== 1 ? 's' : ''} stored locally
+    </span>
+  )}
+</div>
 
-          <div className="min-w-0">
-            <div className="text-[10px] tracking-[0.18em] uppercase text-aero-accent font-bold mb-1.75 flex items-center gap-1.5">
-              <span className="inline-block w-1.5 h-1.5 rounded-full bg-aero-accent" /> Gallery
+        <div className="flex items-center gap-3 shrink-0">
+          {!currentAlbum ? (
+            <div className="flex bg-[#121212] border border-[#222] rounded-lg p-1">
+              <button
+                className={`px-3 sm:px-4 py-1.5 rounded-md text-[12px] sm:text-[13px] font-medium transition-colors cursor-pointer border-none ${
+                  activeTab === 'photos' ? 'bg-[#ff5f1f]/10 text-[#ff5f1f]' : 'bg-transparent text-[#888] hover:text-[#f5f0eb]'
+                }`}
+                onClick={() => { setInfoImage(null); navigate(basePath); }}
+              >
+                Photos
+              </button>
+              <button
+                className={`px-3 sm:px-4 py-1.5 rounded-md text-[12px] sm:text-[13px] font-medium transition-colors cursor-pointer border-none ${
+                  activeTab === 'albums' ? 'bg-[#ff5f1f]/10 text-[#ff5f1f]' : 'bg-transparent text-[#888] hover:text-[#f5f0eb]'
+                }`}
+                onClick={() => { setInfoImage(null); navigate(`${basePath}/albums`); }}
+              >
+                Albums
+              </button>
             </div>
-            <div className="text-[25px] md:text-[28px] font-semibold text-[#F5F0EB] leading-[1.05] m-0">
-              {activeTab === 'albums' ? 'Albums' : 'My Photos'}
-            </div>
-            <div className="text-xs text-[#888] mt-1.75">
-              {allImages.length} image{allImages.length !== 1 ? 's' : ''} stored locally
-            </div>
-          </div>
+          ) : (
+            <button 
+              className="text-[13px] font-medium text-[#888] hover:text-white transition-colors px-3 py-1.5 rounded-lg border border-[#333] hover:border-[#555] bg-transparent cursor-pointer"
+              onClick={() => { setInfoImage(null); navigate(`${basePath}/albums`); }}
+            >
+              ← Back
+            </button>
+          )}
         </div>
       </header>
-
-      {!currentAlbum && (
-        <div className="flex w-full md:w-fit gap-1 -mt-1 md:ml-auto mb-5 md:mb-6 p-1 bg-[#141414] border border-[#2A2A2A] rounded-lg">
-          <button
-            className={`flex-1 md:min-w-24 bg-transparent border text-[#888] px-3.5 py-2 cursor-pointer rounded-md text-[13px] md:text-sm font-semibold leading-tight text-center transition-all duration-200 hover:text-[#F5F0EB] hover:bg-white/5 ${
-              activeTab === 'photos' ? 'text-aero-accent! border-aero-aacent/45! bg-aero-aacent/10!' : 'border-transparent'
-            }`}
-            onClick={() => { setInfoImage(null); navigate(basePath); }}
-          >
-            My Photos
-          </button>
-          <button
-            className={`flex-1 md:min-w-24 bg-transparent border text-[#888] px-3.5 py-2 cursor-pointer rounded-md text-[13px] md:text-sm font-semibold leading-tight text-center transition-all duration-200 hover:text-[#F5F0EB] hover:bg-white/5 ${
-              activeTab === 'albums' ? 'text-aero-accent! border-aero-accent/45! bg-aero-accent/10!' : 'border-transparent'
-            }`}
-            onClick={() => { setInfoImage(null); navigate(`${basePath}/albums`); }}
-          >
-            Albums
-          </button>
-        </div>
-      )}
 
       <input
         id="gridFileInput"
         type="file"
         multiple
         accept="image/*"
-        style={{ display: 'none' }}
+        className="hidden"
         onChange={(e) => processFiles(e.target.files, currentAlbum || 'Default')}
       />
 
-      {activeTab === 'albums' && !currentAlbum && (
-        <Albums onSelectAlbum={(albumName) => navigate(`${basePath}/albums/${encodeURIComponent(albumName)}`)} />
-      )}
+      {/* MAIN WORKSPACE SCROLL CONTAINER - Padding adjusts dynamically based on the Drawer */}
+      <div className={`flex-1 overflow-y-auto p-4 lg:p-6 min-h-0 transition-all duration-200 ${
+        infoImage ? 'lg:pr-[324px] pb-[410px] lg:pb-6' : ''
+      }`}>
+        
+        {activeTab === 'albums' && !currentAlbum && (
+          <Albums onSelectAlbum={(albumName) => navigate(`${basePath}/albums/${encodeURIComponent(albumName)}`)} />
+        )}
 
-      {currentAlbum && (
-  <div className="flex flex-col h-full min-h-0 overflow-hidden">
-    {/* Header / Breadcrumbs - Shrink-0 ensures it stays at the top */}
-    <div className="flex flex-col shrink-0">
-      <div className="flex justify-between items-center mb-4.5 bg-[#141414] px-3.5 py-3 rounded-lg border border-[#2A2A2A]">
-        <div className="flex items-center gap-2.5 text-sm font-semibold">
-          <button 
-            className="bg-none border-none text-[#888] cursor-pointer text-xs font-semibold p-0 hover:text-aero-accent" 
-            onClick={() => { setInfoImage(null); navigate(`${basePath}/albums`); }}
-          >
-            ← Albums
-          </button>
-          <span>/ {currentAlbum}</span>
-        </div>
-      </div>
+        {currentAlbum && (
+          // Removed h-full min-h-0 to let grid expand naturally
+          <div className="flex flex-col gap-4">
+            {displayedImages.length > 0 && (
+              <div className="flex justify-start items-center shrink-0">
+                <button 
+                  className="bg-[#121212] border border-[#222] text-[#F5F0EB] px-3 py-2 rounded-lg text-xs font-medium flex items-center gap-2 hover:bg-[#1a1a1a] transition-colors cursor-pointer" 
+                  onClick={toggleSelectAllImages}
+                >
+                  <div className={`w-3.5 h-3.5 border rounded-[3px] flex items-center justify-center transition-colors ${isAllImagesSelected ? 'bg-[#ff5f1f] border-[#ff5f1f] text-white' : 'border-[#555]'}`}>
+                    {isAllImagesSelected && '✓'}
+                  </div>
+                  {isAllImagesSelected ? 'Deselect All' : 'Select All Photos'}
+                </button>
+              </div>
+            )}
 
-      {displayedImages.length > 0 && (
-        <div className="flex justify-start items-center mb-3.5">
-          <button 
-            className="bg-[#141414] border border-[#2A2A2A] text-[#F5F0EB] px-2.75 py-1.75 rounded-[7px] text-xs font-semibold flex items-center gap-2 hover:bg-[#1F1F1F]" 
-            onClick={toggleSelectAllImages}
-          >
-            <div className={`w-3.5 h-3.5 border rounded-[3px] flex items-center justify-center ${isAllImagesSelected ? 'bg-aero-accent border-aero-accent' : 'border-[#888]'}`}>
-              {isAllImagesSelected && '✓'}
-            </div>
-            {isAllImagesSelected ? 'Deselect All' : 'Select All Photos'}
-          </button>
-        </div>
-      )}
-    </div>
-
-    {/* Scrollable Grid Area - flex-1 and overflow-y-auto keep this constrained */}
-    <div className="flex-1 overflow-y-auto min-h-0 pb-30">
-      <div className="grid grid-cols-[repeat(auto-fill,minmax(132px,1fr))] md:grid-cols-[repeat(auto-fill,minmax(148px,1fr))] gap-3 md:gap-3.5">
-        <div 
-          className="bg-aero-accent/5 border border-dashed border-[#555] flex flex-col items-center justify-center text-aero-accent aspect-square rounded-lg cursor-pointer hover:bg-aero-accent/10 hover:border-aero-accent" 
-          onClick={() => document.getElementById('gridFileInput').click()}
-        >
-          <div className="text-[30px] mb-2 leading-none">+</div>
-          <div className="text-xs font-semibold">Add Photos</div>
-        </div>
-        {displayedImages.map(renderImageGridItem)}
-      </div>
-    </div>
-  </div>
-)}
-
-      {activeTab === 'photos' && !currentAlbum && (
-        <>
-          {allImages.length > 0 && (
-            <div className="flex justify-start items-center mb-3.5">
-              <button 
-                className={`bg-[#141414] border border-[#2A2A2A] text-[#F5F0EB] px-2.75 py-1.75 rounded-[7px] text-xs font-semibold cursor-pointer flex items-center gap-2 transition-all duration-200 hover:bg-[#1F1F1F] hover:border-[#555]`} 
-                onClick={toggleSelectAllImages}
+            <div className="grid grid-cols-[repeat(auto-fill,minmax(132px,1fr))] md:grid-cols-[repeat(auto-fill,minmax(148px,1fr))] gap-3 md:gap-3.5">
+              <div 
+                className="bg-[#121212] border border-dashed border-[#333] flex flex-col items-center justify-center text-[#ff5f1f] aspect-square rounded-lg cursor-pointer hover:bg-[#151515] hover:border-[#ff5f1f] transition-colors" 
+                onClick={() => document.getElementById('gridFileInput').click()}
               >
-                <div className={`w-3.5 h-3.5 border rounded-[3px] inline-flex items-center justify-center text-[10px] transition-all duration-200 ${
-                  isAllImagesSelected ? 'bg-aero-accent border-aero-accent text-white' : 'border-[#888]'
-                }`}>
-                  {isAllImagesSelected && '✓'}
-                </div>
-                {isAllImagesSelected ? 'Deselect All' : 'Select All Photos'}
-              </button>
+                <div className="text-[30px] mb-2 leading-none">+</div>
+                <div className="text-xs font-semibold text-[#888]">Add Photos</div>
+              </div>
+              {displayedImages.map(renderImageGridItem)}
             </div>
-          )}
-
-          <div className="grid grid-cols-[repeat(auto-fill,minmax(132px,1fr))] md:grid-cols-[repeat(auto-fill,minmax(148px,1fr))] gap-3 md:gap-3.5 items-start">
-            <div 
-              className="bg-aero-accent/5 border border-dashed border-[#555] flex flex-col items-center justify-center text-aero-accent aspect-square rounded-lg cursor-pointer transition-all duration-200 min-w-0 hover:bg-aero-accent/10 hover:border-aero-accent" 
-              onClick={() => document.getElementById('gridFileInput').click()}
-            >
-              <div className="text-[30px] mb-2 leading-none">+</div>
-              <div className="text-xs font-semibold">Add Photos</div>
-            </div>
-            {allImages.map(renderImageGridItem)}
           </div>
-        </>
-      )}
+        )}
 
-      {/* Action Bar */}
+        {activeTab === 'photos' && !currentAlbum && (
+          // Removed h-full min-h-0 to let grid expand naturally
+          <div className="flex flex-col gap-4">
+            {allImages.length > 0 && (
+              <div className="flex justify-start items-center shrink-0">
+                <button 
+                  className="bg-[#121212] border border-[#222] text-[#F5F0EB] px-3 py-2 rounded-lg text-xs font-medium flex items-center gap-2 hover:bg-[#1a1a1a] transition-colors cursor-pointer" 
+                  onClick={toggleSelectAllImages}
+                >
+                  <div className={`w-3.5 h-3.5 border rounded-[3px] inline-flex items-center justify-center text-[10px] transition-colors ${
+                    isAllImagesSelected ? 'bg-[#ff5f1f] border-[#ff5f1f] text-white' : 'border-[#555]'
+                  }`}>
+                    {isAllImagesSelected && '✓'}
+                  </div>
+                  {isAllImagesSelected ? 'Deselect All' : 'Select All Photos'}
+                </button>
+              </div>
+            )}
+
+            <div className="grid grid-cols-[repeat(auto-fill,minmax(132px,1fr))] md:grid-cols-[repeat(auto-fill,minmax(148px,1fr))] gap-3 md:gap-3.5 items-start">
+              <div 
+                className="bg-[#121212] border border-dashed border-[#333] flex flex-col items-center justify-center text-[#ff5f1f] aspect-square rounded-lg cursor-pointer min-w-0 hover:bg-[#151515] hover:border-[#ff5f1f] transition-colors" 
+                onClick={() => document.getElementById('gridFileInput').click()}
+              >
+                <div className="text-[30px] mb-2 leading-none">+</div>
+                <div className="text-xs font-semibold text-[#888]">Add Photos</div>
+              </div>
+              {allImages.map(renderImageGridItem)}
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Floating Action Bar (Batch Selection) */}
       {selectedImages.size > 0 && (
         <div className="fixed bottom-4.5 md:bottom-7.5 left-1/2 -translate-x-1/2 w-[calc(100%-32px)] md:w-auto bg-[#1F1F1F] border border-[#333] rounded-[30px] px-3.5 md:px-6 py-2.5 md:py-3 flex justify-between md:justify-center items-center gap-5 z-100 shadow-[0_10px_30px_rgba(0,0,0,0.6)] box-border">
           <button className="bg-transparent text-[#888] border-none text-base cursor-pointer flex items-center justify-center p-1 transition-colors duration-200 hover:text-[#F5F0EB]" onClick={() => setSelectedImages(new Set())}>✕</button>
@@ -444,10 +417,10 @@ export default function Gallery() {
 
       {/* Info Drawer */}
       {infoImage && (
-        <div className="fixed bottom-0 lg:bottom-auto lg:top-17.5 right-0 w-full lg:w-75 h-[min(390px,calc(100vh-70px))] lg:h-[calc(100vh-70px)] bg-[#111] border-t lg:border-t-0 lg:border-l border-[#222] z-40 flex flex-col p-5 box-border gap-4 overflow-y-auto">
+        <div className="fixed bottom-0 lg:bottom-auto lg:top-[73px] right-0 w-full lg:w-[300px] h-[min(390px,calc(100vh-73px))] lg:h-[calc(100vh-73px)] bg-[#111] border-t lg:border-t-0 lg:border-l border-[#222] z-40 flex flex-col p-5 box-border gap-4 overflow-y-auto">
           <div className="flex justify-between items-center">
-            <span className="text-[13px] font-bold uppercase tracking-[0.08em] text-[#ff8a61]">Image Info</span>
-            <button className="bg-transparent border border-[#2a2a2a] text-[#f5f0eb] rounded-lg px-2.5 py-1 cursor-pointer text-[13px] hover:border-[#ff5f1f] hover:text-[#ff5f1f]" onClick={() => setInfoImage(null)}>✕</button>
+            <span className="text-[13px] font-bold uppercase tracking-[0.08em] text-[#ff5f1f]">Image Info</span>
+            <button className="bg-transparent border border-[#2a2a2a] text-[#f5f0eb] rounded-lg px-2.5 py-1 cursor-pointer text-[13px] hover:border-[#ff5f1f] hover:text-[#ff5f1f] transition-colors" onClick={() => setInfoImage(null)}>✕</button>
           </div>
           
           <div className="w-full bg-black rounded-xl overflow-hidden flex items-center justify-center min-h-40 border border-[#222]">
