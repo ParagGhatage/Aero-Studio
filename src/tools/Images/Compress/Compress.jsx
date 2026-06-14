@@ -92,114 +92,104 @@ export default function Compress() {
   };
 
   const handleCompress = useCallback(async () => {
-    const img = imageRef.current;
+  const img = imageRef.current;
+  if (!img || !dimensions.width) return;
 
-    if (!img || !dimensions.width) return;
+  setIsCompressing(true);
+  await new Promise(r => setTimeout(r, 0)); // yield so React paints "Compressing..." first
 
-    setIsCompressing(true);
+  try {
+    const { mime } = mimeFromFile(file);
+    const ratio = targetSize / originalSize;
 
-    try {
-      const { mime } = mimeFromFile(file);
-      const ratio = targetSize / originalSize;
-
-      // --- DYNAMIC SCALING LOGIC ---
-      let scale = 1.0;
-      
-      // If we are crushing the file size below 50%, start reducing physical resolution
-      if (ratio < 0.5) {
-        // Area scales quadratically. This curve smoothly drops scale as ratio drops.
-        scale = Math.sqrt(ratio / 0.5); 
-        
-        // Prevent scaling down to unusable thumbnail sizes. 
-        // Ensure the longest edge is at least 300px (unless originally smaller).
-        const maxEdge = Math.max(dimensions.width, dimensions.height);
-        if (maxEdge * scale < 300) {
-          scale = Math.min(1.0, 300 / maxEdge);
-        }
-      }
-
-      const targetWidth = Math.round(dimensions.width * scale);
-      const targetHeight = Math.round(dimensions.height * scale);
-      // ------------------------------
-
-      const canvas = canvasRef.current;
-      canvas.width = targetWidth;
-      canvas.height = targetHeight;
-
-      const ctx = canvas.getContext('2d');
-      ctx.fillStyle = '#FFFFFF';
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-      // Draw the image at the new dynamically scaled resolution
-      ctx.drawImage(img, 0, 0, targetWidth, targetHeight);
-
-      // Smart initial guess based on the remaining compression needed
-      let quality = guessQuality(ratio);
-
-      let blob = await canvasToBlob(canvas, mime, quality);
-
-      const closeEnough = (size) => Math.abs(size - targetSize) / targetSize <= TOLERANCE;
-      const almostExact = (size) => Math.abs(size - targetSize) <= 2048; // 2 KB
-
-      if (closeEnough(blob.size) || almostExact(blob.size)) {
-        setResultUrl(URL.createObjectURL(blob));
-        setResultSize(blob.size);
-        return;
-      }
-
-      let lowQ;
-      let highQ;
-      let lowSize;
-      let highSize;
-
-      if (blob.size > targetSize) {
-        lowQ = 0.01;
-        lowSize = 0;
-        highQ = quality;
-        highSize = blob.size;
-      } else {
-        lowQ = quality;
-        lowSize = blob.size;
-        highQ = 1.0;
-
-        const highBlob = await canvasToBlob(canvas, mime, highQ);
-        highSize = highBlob.size;
-      }
-
-      for (let i = 0; i < 6; i++) {
-        if (Math.abs(highSize - lowSize) < 1024) break;
-
-        let nextQ;
-
-        // Interpolation Search
-        if (highSize !== lowSize) {
-          nextQ = lowQ + ((targetSize - lowSize) * (highQ - lowQ)) / (highSize - lowSize);
-        } else {
-          nextQ = (lowQ + highQ) / 2;
-        }
-
-        nextQ = Math.max(lowQ + 0.005, Math.min(highQ - 0.005, nextQ));
-        quality = nextQ;
-
-        blob = await canvasToBlob(canvas, mime, quality);
-
-        if (closeEnough(blob.size) || almostExact(blob.size)) break;
-
-        if (blob.size > targetSize) {
-          highQ = quality;
-          highSize = blob.size;
-        } else {
-          lowQ = quality;
-          lowSize = blob.size;
-        }
-      }
-
-      setResultUrl(URL.createObjectURL(blob));
-      setResultSize(blob.size);
-    } finally {
-      setIsCompressing(false);
+    // --- DYNAMIC SCALING ---
+    let scale = 1.0;
+    if (ratio < 0.5) {
+      scale = Math.sqrt(ratio / 0.5);
+      const maxEdge = Math.max(dimensions.width, dimensions.height);
+      if (maxEdge * scale < 300) scale = Math.min(1.0, 300 / maxEdge);
     }
-  }, [file, dimensions, targetSize, originalSize]);
+
+    const canvas = canvasRef.current;
+    canvas.width  = Math.round(dimensions.width  * scale);
+    canvas.height = Math.round(dimensions.height * scale);
+    const ctx = canvas.getContext('2d');
+    ctx.fillStyle = '#FFFFFF';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+    // --- 1. ANCHOR SAMPLES ---
+    // Sample the real curve of this specific image at two extremes.
+    const highBlob = await canvasToBlob(canvas, mime, 0.90);
+    const highSize = highBlob.size;
+
+    // If 90% quality already fits, we're done.
+    if (highSize <= targetSize) {
+      setResultUrl(URL.createObjectURL(highBlob));
+      setResultSize(highSize);
+      return;
+    }
+
+    const lowBlob = await canvasToBlob(canvas, mime, 0.10);
+    const lowSize = lowBlob.size;
+
+    // bestBlob tracks the closest result that is strictly <= targetSize.
+    // Start with the 10% sample as our safety fallback.
+    let bestBlob = lowBlob;
+    let lowQ = 0.10, highQ = 0.90;
+    let curLowSize = lowSize, curHighSize = highSize;
+
+    // If even 10% is too big, drop to the floor.
+    if (lowSize > targetSize) {
+      const floorBlob = await canvasToBlob(canvas, mime, 0.01);
+      setResultUrl(URL.createObjectURL(floorBlob));
+      setResultSize(floorBlob.size);
+      return;
+    }
+
+    // --- 2. FALSE POSITION (INTERPOLATION SEARCH) ---
+    // Draw a line between (lowQ, lowSize) and (highQ, highSize).
+    // Predict where targetSize falls on that line to pick the next q.
+    // After each sample, tighten the bounds and repeat.
+    const MAX_ITER = 6;
+
+    for (let i = 0; i < MAX_ITER; i++) {
+      if (curHighSize === curLowSize) break;
+
+      // Linear interpolation on the curve we've measured so far.
+      let predictedQ = lowQ + 
+        ((targetSize - curLowSize) / (curHighSize - curLowSize)) * (highQ - lowQ);
+
+      // Keep the guess strictly inside bounds to avoid stalling.
+      predictedQ = Math.max(lowQ + 0.01, Math.min(highQ - 0.01, predictedQ));
+
+      const testBlob = await canvasToBlob(canvas, mime, predictedQ);
+      const testSize = testBlob.size;
+
+      if (testSize <= targetSize) {
+        // Valid result — save it and move the lower bound up.
+        bestBlob = testBlob;
+        lowQ = predictedQ;
+        curLowSize = testSize;
+
+        // Close enough (within 2% below target) — stop early.
+        if ((targetSize - testSize) / targetSize <= 0.02) break;
+      } else {
+        // Too big — move the upper bound down.
+        highQ = predictedQ;
+        curHighSize = testSize;
+      }
+
+      // Bounds converged — no point searching further.
+      if (highQ - lowQ < 0.02) break;
+    }
+
+    setResultUrl(URL.createObjectURL(bestBlob));
+    setResultSize(bestBlob.size);
+  } finally {
+    setIsCompressing(false);
+  }
+}, [file, dimensions, targetSize, originalSize]);
 
   const handleDownload = () => {
     if (!resultUrl) return;
