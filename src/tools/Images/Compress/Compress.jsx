@@ -14,11 +14,13 @@ function mimeFromFile(file) {
 }
 
 function guessQuality(ratio) {
-  if (ratio >= 0.8) return 0.90;
-  if (ratio >= 0.6) return 0.75;
-  if (ratio >= 0.4) return 0.60;
-  if (ratio >= 0.2) return 0.45;
-  return 0.30;
+  return Math.max(
+    0.05,
+    Math.min(
+      0.95,
+      Math.pow(ratio, 0.45)
+    )
+  );
 }
 
 function canvasToBlob(canvas, mime, quality) {
@@ -91,41 +93,112 @@ export default function Compress() {
 
   const handleCompress = useCallback(async () => {
     const img = imageRef.current;
+
     if (!img || !dimensions.width) return;
+
     setIsCompressing(true);
 
-    const { mime } = mimeFromFile(file);
-    const canvas = canvasRef.current;
-    canvas.width = dimensions.width;
-    canvas.height = dimensions.height;
-    const ctx = canvas.getContext('2d');
+    try {
+      const { mime } = mimeFromFile(file);
+      const ratio = targetSize / originalSize;
 
-    ctx.fillStyle = '#FFFFFF';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    ctx.drawImage(img, 0, 0, dimensions.width, dimensions.height);
-
-    const ratio = targetSize / originalSize;
-    let quality = guessQuality(ratio);
-    let blob = await canvasToBlob(canvas, mime, quality);
-
-    const close = (size) => Math.abs(size - targetSize) / targetSize <= TOLERANCE;
-
-    if (!close(blob.size)) {
-      let lo = blob.size > targetSize ? 0.01 : quality;
-      let hi = blob.size > targetSize ? quality : 1.0;
-
-      for (let i = 0; i < 4; i++) {
-        quality = (lo + hi) / 2;
-        blob = await canvasToBlob(canvas, mime, quality);
-        if (close(blob.size)) break;
-        if (blob.size > targetSize) hi = quality;
-        else lo = quality;
+      // --- DYNAMIC SCALING LOGIC ---
+      let scale = 1.0;
+      
+      // If we are crushing the file size below 50%, start reducing physical resolution
+      if (ratio < 0.5) {
+        // Area scales quadratically. This curve smoothly drops scale as ratio drops.
+        scale = Math.sqrt(ratio / 0.5); 
+        
+        // Prevent scaling down to unusable thumbnail sizes. 
+        // Ensure the longest edge is at least 300px (unless originally smaller).
+        const maxEdge = Math.max(dimensions.width, dimensions.height);
+        if (maxEdge * scale < 300) {
+          scale = Math.min(1.0, 300 / maxEdge);
+        }
       }
-    }
 
-    setResultUrl(URL.createObjectURL(blob));
-    setResultSize(blob.size);
-    setIsCompressing(false);
+      const targetWidth = Math.round(dimensions.width * scale);
+      const targetHeight = Math.round(dimensions.height * scale);
+      // ------------------------------
+
+      const canvas = canvasRef.current;
+      canvas.width = targetWidth;
+      canvas.height = targetHeight;
+
+      const ctx = canvas.getContext('2d');
+      ctx.fillStyle = '#FFFFFF';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // Draw the image at the new dynamically scaled resolution
+      ctx.drawImage(img, 0, 0, targetWidth, targetHeight);
+
+      // Smart initial guess based on the remaining compression needed
+      let quality = guessQuality(ratio);
+
+      let blob = await canvasToBlob(canvas, mime, quality);
+
+      const closeEnough = (size) => Math.abs(size - targetSize) / targetSize <= TOLERANCE;
+      const almostExact = (size) => Math.abs(size - targetSize) <= 2048; // 2 KB
+
+      if (closeEnough(blob.size) || almostExact(blob.size)) {
+        setResultUrl(URL.createObjectURL(blob));
+        setResultSize(blob.size);
+        return;
+      }
+
+      let lowQ;
+      let highQ;
+      let lowSize;
+      let highSize;
+
+      if (blob.size > targetSize) {
+        lowQ = 0.01;
+        lowSize = 0;
+        highQ = quality;
+        highSize = blob.size;
+      } else {
+        lowQ = quality;
+        lowSize = blob.size;
+        highQ = 1.0;
+
+        const highBlob = await canvasToBlob(canvas, mime, highQ);
+        highSize = highBlob.size;
+      }
+
+      for (let i = 0; i < 6; i++) {
+        if (Math.abs(highSize - lowSize) < 1024) break;
+
+        let nextQ;
+
+        // Interpolation Search
+        if (highSize !== lowSize) {
+          nextQ = lowQ + ((targetSize - lowSize) * (highQ - lowQ)) / (highSize - lowSize);
+        } else {
+          nextQ = (lowQ + highQ) / 2;
+        }
+
+        nextQ = Math.max(lowQ + 0.005, Math.min(highQ - 0.005, nextQ));
+        quality = nextQ;
+
+        blob = await canvasToBlob(canvas, mime, quality);
+
+        if (closeEnough(blob.size) || almostExact(blob.size)) break;
+
+        if (blob.size > targetSize) {
+          highQ = quality;
+          highSize = blob.size;
+        } else {
+          lowQ = quality;
+          lowSize = blob.size;
+        }
+      }
+
+      setResultUrl(URL.createObjectURL(blob));
+      setResultSize(blob.size);
+    } finally {
+      setIsCompressing(false);
+    }
   }, [file, dimensions, targetSize, originalSize]);
 
   const handleDownload = () => {
