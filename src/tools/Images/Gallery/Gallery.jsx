@@ -326,47 +326,51 @@ export default function Gallery() {
       )}
 
       {currentAlbum && (
-        <>
-          <div className="flex justify-between items-center mb-4.5 bg-[#141414] px-3.5 py-3 rounded-lg border border-[#2A2A2A]">
-            <div className="flex items-center gap-2.5 text-sm font-semibold min-w-0">
-              <button 
-                className="bg-none border-none text-[#888] cursor-pointer text-xs font-semibold p-0 transition-colors duration-200 hover:text-aero-accent" 
-                onClick={() => { setInfoImage(null); navigate(`${basePath}/albums`); }}
-              >
-                ← Albums
-              </button>
-              <span>/ {currentAlbum}</span>
-            </div>
-          </div>
+  <div className="flex flex-col h-full min-h-0 overflow-hidden">
+    {/* Header / Breadcrumbs - Shrink-0 ensures it stays at the top */}
+    <div className="flex flex-col shrink-0">
+      <div className="flex justify-between items-center mb-4.5 bg-[#141414] px-3.5 py-3 rounded-lg border border-[#2A2A2A]">
+        <div className="flex items-center gap-2.5 text-sm font-semibold">
+          <button 
+            className="bg-none border-none text-[#888] cursor-pointer text-xs font-semibold p-0 hover:text-aero-accent" 
+            onClick={() => { setInfoImage(null); navigate(`${basePath}/albums`); }}
+          >
+            ← Albums
+          </button>
+          <span>/ {currentAlbum}</span>
+        </div>
+      </div>
 
-          {displayedImages.length > 0 && (
-            <div className="flex justify-start items-center mb-3.5">
-              <button 
-                className={`bg-[#141414] border border-[#2A2A2A] text-[#F5F0EB] px-2.75 py-175 rounded-[7px] text-xs font-semibold cursor-pointer flex items-center gap-2 transition-all duration-200 hover:bg-[#1F1F1F] hover:border-[#555]`} 
-                onClick={toggleSelectAllImages}
-              >
-                <div className={`w-3.5 h-3.5 border rounded-[3px] inline-flex items-center justify-center text-[10px] transition-all duration-200 ${
-                  isAllImagesSelected ? 'bg-aero-accent border-aero-accent text-white' : 'border-[#888]'
-                }`}>
-                  {isAllImagesSelected && '✓'}
-                </div>
-                {isAllImagesSelected ? 'Deselect All' : 'Select All Photos'}
-              </button>
+      {displayedImages.length > 0 && (
+        <div className="flex justify-start items-center mb-3.5">
+          <button 
+            className="bg-[#141414] border border-[#2A2A2A] text-[#F5F0EB] px-2.75 py-1.75 rounded-[7px] text-xs font-semibold flex items-center gap-2 hover:bg-[#1F1F1F]" 
+            onClick={toggleSelectAllImages}
+          >
+            <div className={`w-3.5 h-3.5 border rounded-[3px] flex items-center justify-center ${isAllImagesSelected ? 'bg-aero-accent border-aero-accent' : 'border-[#888]'}`}>
+              {isAllImagesSelected && '✓'}
             </div>
-          )}
-
-          <div className="grid grid-cols-[repeat(auto-fill,minmax(132px,1fr))] md:grid-cols-[repeat(auto-fill,minmax(148px,1fr))] gap-3 md:gap-3.5 items-start">
-            <div 
-              className="bg-aero-accent/5 border border-dashed border-[#555] flex flex-col items-center justify-center text-aero-accent aspect-square rounded-lg cursor-pointer transition-all duration-200 min-w-0 hover:bg-aero-accent/10 hover:border-aero-accent" 
-              onClick={() => document.getElementById('gridFileInput').click()}
-            >
-              <div className="text-[30px] mb-2 leading-none">+</div>
-              <div className="text-xs font-semibold">Add Photos</div>
-            </div>
-            {displayedImages.map(renderImageGridItem)}
-          </div>
-        </>
+            {isAllImagesSelected ? 'Deselect All' : 'Select All Photos'}
+          </button>
+        </div>
       )}
+    </div>
+
+    {/* Scrollable Grid Area - flex-1 and overflow-y-auto keep this constrained */}
+    <div className="flex-1 overflow-y-auto min-h-0 pb-30">
+      <div className="grid grid-cols-[repeat(auto-fill,minmax(132px,1fr))] md:grid-cols-[repeat(auto-fill,minmax(148px,1fr))] gap-3 md:gap-3.5">
+        <div 
+          className="bg-aero-accent/5 border border-dashed border-[#555] flex flex-col items-center justify-center text-aero-accent aspect-square rounded-lg cursor-pointer hover:bg-aero-accent/10 hover:border-aero-accent" 
+          onClick={() => document.getElementById('gridFileInput').click()}
+        >
+          <div className="text-[30px] mb-2 leading-none">+</div>
+          <div className="text-xs font-semibold">Add Photos</div>
+        </div>
+        {displayedImages.map(renderImageGridItem)}
+      </div>
+    </div>
+  </div>
+)}
 
       {activeTab === 'photos' && !currentAlbum && (
         <>
