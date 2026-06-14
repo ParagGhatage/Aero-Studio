@@ -22,7 +22,14 @@ export default defineConfig({
         cleanupOutdatedCaches: true,
         clientsClaim: true,
         skipWaiting: true,
-        // ADD THIS: Runtime caching for external Google Fonts
+        
+        // This MUST be inside the workbox object
+        navigateFallbackDenylist: [
+          /^\/sitemap\.xml$/, 
+          /^\/robots\.txt$/
+        ],
+
+        // Runtime caching for external Google Fonts
         runtimeCaching: [
           {
             urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,
@@ -44,7 +51,6 @@ export default defineConfig({
           }
         ]
       },
-
       manifest: {
         name: 'Aero Studio',
         short_name: 'AeroStudio',
