@@ -2,12 +2,13 @@ import { useEffect } from 'react';
 import { RouterProvider } from 'react-router-dom';
 import { router } from './routes';
 
+import { GlobalMediaProvider } from './Context/GlbalMediaProvider';
+
 export default function App() {
   
   // PWA Background Auto-Updater
   useEffect(() => {
     const handleVisibilityChange = () => {
-      // Check for updates when the app comes back to the foreground
       if (document.visibilityState === 'visible' && 'serviceWorker' in navigator) {
         navigator.serviceWorker.ready.then((registration) => {
           registration.update();
@@ -17,7 +18,6 @@ export default function App() {
 
     document.addEventListener('visibilitychange', handleVisibilityChange);
 
-    // When the new service worker takes over, quietly reload the page 
     let refreshing = false;
     navigator.serviceWorker?.addEventListener('controllerchange', () => {
       if (!refreshing) {
@@ -31,6 +31,11 @@ export default function App() {
     };
   }, []);
 
-  // Return your centralized routes
-  return <RouterProvider router={router} />;
+  // Wrap the RouterProvider with GlobalMediaProvider
+  // This ensures the Gallery and all other tools are within the context scope
+  return (
+    <GlobalMediaProvider>
+      <RouterProvider router={router} />
+    </GlobalMediaProvider>
+  );
 }

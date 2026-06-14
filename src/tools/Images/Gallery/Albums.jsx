@@ -1,10 +1,10 @@
 import { useState } from 'react';
-import { useLiveQuery } from 'dexie-react-hooks';
+
 import { db } from '../../../db';
+import { useGlobalMedia } from '../../../Context/GlobalMediaContext';
 
 export default function Albums({ onSelectAlbum }) {
-  const albums = useLiveQuery(() => db.albums.orderBy('createdAt').toArray()) || [];
-  const images = useLiveQuery(() => db.images.toArray()) || [];
+  const { albums, images } = useGlobalMedia();
   
   const [hoveredId, setHoveredId] = useState(null);
   const [selectedAlbums, setSelectedAlbums] = useState(new Set());

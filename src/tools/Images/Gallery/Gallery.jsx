@@ -1,10 +1,11 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useNavigate, useLocation, useParams, useSearchParams } from 'react-router-dom';
-import { useLiveQuery } from 'dexie-react-hooks';
+
+import { useGlobalMedia } from '../../../Context/GlobalMediaContext';
 import { db } from '../../../db';
 import Albums from './Albums';
 
-// Memory-Safe Blob Renderer
+
 // Memory-Safe & Render-Optimized Blob Renderer
 const BlobImage = ({ blob, alt, className }) => {
   const imgRef = useRef(null);
@@ -36,6 +37,7 @@ export default function Gallery() {
   const navigate = useNavigate();
   const location = useLocation();
   const params = useParams();
+  const { images: allImages } = useGlobalMedia();
 
   // --- URL-DRIVEN VIEWER STATE ---
   const [searchParams, setSearchParams] = useSearchParams();
@@ -91,9 +93,10 @@ export default function Gallery() {
     setSelectedImages(new Set());
   }
 
-  const allImages = useLiveQuery(() => db.images.orderBy('createdAt').reverse().toArray()) || [];
-  const displayedImages = currentAlbum ? allImages.filter(img => img.album === currentAlbum) : allImages;
-
+  
+  const displayedImages = currentAlbum 
+    ? allImages.filter(img => img.album === currentAlbum) 
+    : allImages;
   // --- DERIVE VIEWING IMAGE FROM URL ---
   const viewingImage = viewId ? allImages.find(img => img.id.toString() === viewId) : null;
 
