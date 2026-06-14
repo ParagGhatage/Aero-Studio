@@ -4,158 +4,216 @@ const CATEGORIES = [
   {
     id: 'images',
     label: 'Images',
+    shortLabel: 'Images', // 1-word for mobile
     tag: 'Photo & Graphics',
     description: 'Organise, view and edit your photos. Drag-and-drop import, albums, and a full-screen viewer — all stored locally.',
     tools: ['Gallery', 'Slideshow', 'Metadata', 'Batch Resize'],
     accentColor: '#FF5F1F',
-    glowColor: 'rgba(255,95,31,0.18)',
+    glowColor: 'rgba(255,95,31,0.08)',
     iconBg: '#FF5F1F12',
     chipBorder: '#FF5F1F55',
     icon: (
-      <svg width="52" height="52" viewBox="0 0 52 52" fill="none">
-        <rect x="4" y="10" width="38" height="30" rx="3" stroke="currentColor" strokeWidth="1.5"/>
-        <rect x="10" y="4" width="38" height="30" rx="3" stroke="currentColor" strokeWidth="1.5" strokeDasharray="4 2"/>
-        <circle cx="17" cy="26" r="5" stroke="currentColor" strokeWidth="1.5"/>
-        <path d="M27 32 L33 23 L42 32" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round"/>
+      <svg viewBox="0 0 52 52" fill="none" className="w-full h-full">
+        <rect x="4" y="10" width="38" height="30" rx="3" stroke="currentColor" strokeWidth="2"/>
+        <rect x="10" y="4" width="38" height="30" rx="3" stroke="currentColor" strokeWidth="2" strokeDasharray="4 2"/>
+        <circle cx="17" cy="26" r="5" stroke="currentColor" strokeWidth="2"/>
+        <path d="M27 32 L33 23 L42 32" stroke="currentColor" strokeWidth="2" strokeLinejoin="round"/>
       </svg>
     ),
     disabled: false,
   },
   {
     id: 'pdf',
-    label: 'PDF',
+    label: 'PDF Documents',
+    shortLabel: 'PDF', // 1-word for mobile
     tag: 'Documents',
     description: 'View, merge, split and extract text from PDF files. Handle multi-page documents without any uploads to the cloud.',
     tools: ['Viewer', 'Merger', 'Splitter', 'Text Extract'],
     accentColor: '#4ECDC4',
-    glowColor: 'rgba(78,205,196,0.15)',
+    glowColor: 'rgba(78,205,196,0.08)',
     iconBg: '#4ECDC412',
     chipBorder: '#4ECDC455',
     icon: (
-      <svg width="52" height="52" viewBox="0 0 52 52" fill="none">
-        <rect x="8" y="4" width="30" height="38" rx="3" stroke="currentColor" strokeWidth="1.5"/>
-        <path d="M38 10 L44 16 L44 48 H14 V44" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round"/>
-        <path d="M38 4 V10 H44" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round"/>
-        <line x1="15" y1="19" x2="30" y2="19" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
-        <line x1="15" y1="26" x2="30" y2="26" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
-        <line x1="15" y1="33" x2="24" y2="33" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+      <svg viewBox="0 0 52 52" fill="none" className="w-full h-full">
+        <rect x="8" y="4" width="30" height="38" rx="3" stroke="currentColor" strokeWidth="2"/>
+        <path d="M38 10 L44 16 L44 48 H14 V44" stroke="currentColor" strokeWidth="2" strokeLinejoin="round"/>
+        <path d="M38 4 V10 H44" stroke="currentColor" strokeWidth="2" strokeLinejoin="round"/>
+        <line x1="15" y1="19" x2="30" y2="19" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+        <line x1="15" y1="26" x2="30" y2="26" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+        <line x1="15" y1="33" x2="24" y2="33" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
       </svg>
     ),
     disabled: true,
   },
   {
     id: 'videos',
-    label: 'Videos',
+    label: 'Video Media',
+    shortLabel: 'Videos', // 1-word for mobile
     tag: 'Media',
     description: 'Play, trim and capture frames from local video files. Supports all major formats with keyboard-driven controls.',
     tools: ['Player', 'Frame Capture', 'Clip Trim', 'Subtitles'],
     accentColor: '#A78BFA',
-    glowColor: 'rgba(167,139,250,0.15)',
+    glowColor: 'rgba(167,139,250,0.08)',
     iconBg: '#A78BFA12',
     chipBorder: '#A78BFA55',
     icon: (
-      <svg width="52" height="52" viewBox="0 0 52 52" fill="none">
-        <rect x="4" y="10" width="36" height="28" rx="3" stroke="currentColor" strokeWidth="1.5"/>
-        <path d="M40 17 L48 13 L48 35 L40 31" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round"/>
-        <path d="M19 20 L31 26 L19 32 Z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round"/>
+      <svg viewBox="0 0 52 52" fill="none" className="w-full h-full">
+        <rect x="4" y="10" width="36" height="28" rx="3" stroke="currentColor" strokeWidth="2"/>
+        <path d="M40 17 L48 13 L48 35 L40 31" stroke="currentColor" strokeWidth="2" strokeLinejoin="round"/>
+        <path d="M19 20 L31 26 L19 32 Z" stroke="currentColor" strokeWidth="2" strokeLinejoin="round"/>
       </svg>
     ),
     disabled: true,
   },
 ];
 
-function CategoryCard({ cat, onClick }) {
-  return (
-    <div
-      style={{
-        '--card-accent': cat.accentColor,
-        '--card-glow': cat.glowColor,
-        '--icon-bg': cat.iconBg,
-        '--chip-border': cat.chipBorder
-      }}
-      // Switched to [var(--...)] syntax and added responsive borders
-      className="group relative p-8 md:p-10 border-b md:border-b-0 md:border-r border-aero-border cursor-pointer transition-colors duration-200 flex flex-col min-h-80 hover:bg-(--card-glow)"
-      onClick={onClick}
-    >
-      {/* Top animating border line */}
-      <div className="absolute top-0 left-0 right-0 h-0.5 bg-(--card-accent) scale-x-0 origin-left transition-transform duration-300 group-hover:scale-x-100" />
-      
-      {/* Icon Wrap */}
-      <div className="w-17.5 h-17.5 rounded-2xl border border-aero-border-emphasis flex items-center justify-center mb-6 text-aero-text-dim transition-all duration-200 group-hover:border-(--card-accent) group-hover:text-(--card-accent) group-hover:bg-(--icon-bg)">
-        {cat.icon}
-      </div>
-
-      <div className="text-[10px] tracking-[0.18em] uppercase text-aero-text-dim mb-2 transition-colors duration-200 group-hover:text-(--card-accent)">
-        {cat.tag}
-      </div>
-      
-      <div className="text-[26px] font-normal text-aero-text mb-3 tracking-[-0.01em]">
-        {cat.label}
-      </div>
-      
-      <div className="text-[13px] text-aero-text-sub leading-[1.7] flex-1">
-        {cat.description}
-      </div>
-      
-      <div className="flex flex-wrap gap-1.5 mt-6">
-        {cat.tools.map(t => (
-          <span 
-            key={t} 
-            className="text-[11px] px-2.5 py-1 rounded-full border border-aero-border-emphasis text-aero-text-dim transition-all duration-200 tracking-[0.02em] group-hover:border-(--chip-border) group-hover:text-(--card-accent)"
-          >
-            {t}
-          </span>
-        ))}
-      </div>
-      
-      <div className="mt-6 text-[13px] text-aero-text-dim font-medium transition-all duration-200 flex items-center gap-1.5 tracking-[0.04em] group-hover:text-(--card-accent) group-hover:translate-x-1">
-        Open {cat.label} <span>→</span>
-      </div>
-      
-    </div>
-  );
-}
-
 export default function AppDashboard() {
   const navigate = useNavigate();
 
   return (
-    // Updated to use 100dvh for proper mobile sizing
-    <div className="bg-aero-bg min-h-[calc(100dvh-70px)] font-body text-aero-text flex flex-col p-0 overflow-x-hidden w-full">
+    // Locked height to prevent scrolling. Background strictly dark.
+    <div className="bg-[#0D0D0D] h-dvh md:h-[calc(100dvh-70px)] text-[#F5F0EB] flex flex-col overflow-hidden w-full">
       
-      <div className="pt-12 px-6 md:px-10 pb-8 max-w-155">
-        <div className="text-[11px] tracking-[0.18em] uppercase text-aero-text-dim mb-3 font-display font-medium">
-          Multimedia Workspace
+      
+      {/* 1. MOBILE VIEW: Balanced iOS Layout       */}
+     
+      <div className="md:hidden flex-1 flex flex-col p-6 bg-[#000]">
+        
+        {/* Top Hero - Fills the upper empty space */}
+        <div className="mt-4 mb-auto">
+          
+          <div className="text-[32px] font-semibold text-white leading-[1.15] mb-3 tracking-tight">
+            Multimedia<br />Workspace.
+          </div>
+          <div className="text-[14px] text-[#888] leading-[1.6]">
+            A local-first toolbox. Nothing leaves your browser.
+          </div>
         </div>
-        <div className="text-[36px] font-bold text-aero-text leading-[1.15] mb-3 font-display">
-          Your files,<br />your device.
+
+        {/* Center Grid - App Launcher */}
+        <div className="w-full max-w-[340px] mx-auto mb-auto">
+          <div className="grid grid-cols-3 gap-4 sm:gap-6">
+            {CATEGORIES.map(cat => (
+              <div 
+                key={cat.id} 
+                className={`flex flex-col items-center select-none ${!cat.disabled ? 'cursor-pointer active:scale-95 transition-transform' : 'opacity-40'}`}
+                onClick={() => !cat.disabled && navigate(`/${cat.id}`)}
+              >
+                <div 
+                  className="relative w-[76px] h-[76px] rounded-[20px] flex items-center justify-center mb-3 shadow-[0_4px_20px_rgba(0,0,0,0.5)] border"
+                  style={{ 
+                    backgroundColor: '#161616',
+                    borderColor: '#2A2A2A',
+                    color: cat.accentColor
+                  }}
+                >
+                  <div className="w-9 h-9">
+                    {cat.icon}
+                  </div>
+                  {cat.disabled && (
+                    <span className="absolute -top-2 -right-2 bg-[#222] border border-[#333] text-[#aaa] text-[9px] font-bold px-1.5 py-0.5 rounded-md">
+                      SOON
+                    </span>
+                  )}
+                </div>
+                <span className="text-[13px] font-medium text-[#ccc] tracking-wide">
+                  {cat.shortLabel}
+                </span>
+              </div>
+            ))}
+          </div>
         </div>
-        <div className="text-[14px] text-aero-text-sub leading-[1.6]">
-          A local-first toolbox for images, documents, and video.
-          Nothing leaves your browser.
+
+        {/* Bottom Footer - Anchors the bottom of the screen */}
+        <div className="mt-auto pt-6 border-t border-[#1a1a1a] text-center">
+          <span className="text-[#555] text-[10px] tracking-widest uppercase font-semibold">
+            All data stored locally · Zero tracking
+          </span>
         </div>
+
       </div>
 
-      {/* Grid shifts from 1 column on phones to 3 columns on desktops */}
-      <div className="flex-1 grid grid-cols-1 md:grid-cols-3 gap-0 border-t border-aero-border w-full">
-        {CATEGORIES.map(cat => (
-          <CategoryCard
-            key={cat.id}
-            cat={cat}
-            onClick={() => {
-              if (cat.id === 'images') {
-                navigate(`/${cat.id}`);
-              }
-            }}
-          />
-        ))}
-      </div>
+      {/* ========================================= */}
+      {/* 2. DESKTOP VIEW: Large Triple Columns     */}
+      {/* ========================================= */}
+      <div className="hidden md:flex flex-col h-full w-full">
+        
+        {/* Improved Grand Header */}
+        <header className="pt-14 px-10 xl:px-16 pb-10 shrink-0">
+          <div className="flex items-center gap-2 mb-4">
+            <div className="w-2 h-2 rounded-full bg-[#FF5F1F]" />
+            <div className="text-[12px] tracking-[0.2em] uppercase text-[#888] font-bold">
+              Aero Studio
+            </div>
+          </div>
+          <div className="flex flex-col xl:flex-row xl:items-end justify-between gap-4">
+            <h1 className="text-[44px] lg:text-[52px] font-semibold leading-[1.05] tracking-tight m-0 text-white">
+              Multimedia<br />Workspace.
+            </h1>
+            <p className="text-[16px] text-[#777] max-w-sm mb-2 leading-relaxed">
+              A local-first toolbox for images, documents, and video. 
+              Zero uploads. Zero tracking.
+            </p>
+          </div>
+        </header>
 
-      {/* Footer stacks text on mobile instead of overlapping */}
-      <footer className="py-6 md:py-4 px-6 md:px-10 border-t border-aero-border text-[11px] text-aero-text-dim tracking-[0.06em] flex flex-col md:flex-row gap-4 justify-between font-display text-center md:text-left w-full">
-        <span>All data stored in IndexedDB · Zero uploads · Zero tracking</span>
-        <span>Aero Studio</span>
-      </footer>
+        {/* 3 Even Columns taking up exactly the remaining space */}
+        <div className="flex-1 grid grid-cols-3 border-t border-[#222] min-h-0">
+          {CATEGORIES.map(cat => (
+            <div
+              key={cat.id}
+              onClick={() => !cat.disabled && navigate(`/${cat.id}`)}
+              style={{
+                '--accent': cat.accentColor,
+                '--glow': cat.glowColor,
+                '--icon-bg': cat.iconBg,
+                '--chip-border': cat.chipBorder
+              }}
+              className={`group relative p-10 xl:p-14 border-r last:border-r-0 border-[#222] flex flex-col h-full transition-colors duration-300 ${
+                !cat.disabled ? 'cursor-pointer hover:bg-[var(--glow)]' : 'cursor-default opacity-50'
+              }`}
+            >
+              {/* Top animating border line */}
+              {!cat.disabled && (
+                <div className="absolute top-[-1px] left-0 right-0 h-[2px] bg-[var(--accent)] scale-x-0 origin-left transition-transform duration-300 group-hover:scale-x-100 z-10" />
+              )}
+
+              {/* Much Bigger Icon */}
+              <div className="w-24 h-24 rounded-[24px] border border-[#333] bg-[#161616] flex items-center justify-center mb-8 text-[#666] transition-all duration-300 group-hover:border-[var(--accent)] group-hover:text-[var(--accent)] group-hover:bg-[var(--icon-bg)]">
+                <div className="w-12 h-12">
+                  {cat.icon}
+                </div>
+              </div>
+              
+              <div className="text-[32px] font-semibold text-white mb-4 tracking-tight">
+                {cat.label}
+              </div>
+              
+              <div className="text-[15px] text-[#888] leading-[1.6] mb-10 xl:pr-10">
+                {cat.description}
+              </div>
+
+              {/* Tools / Extensions - Significantly larger and more visible */}
+              <div className="flex flex-wrap gap-2.5 mt-auto">
+                {cat.tools.map(t => (
+                  <span 
+                    key={t} 
+                    className="text-[13px] font-medium px-4 py-2 rounded-full border border-[#333] text-[#aaa] bg-[#111] transition-all duration-300 tracking-wide group-hover:border-[var(--chip-border)] group-hover:text-[var(--accent)] group-hover:bg-[var(--icon-bg)]"
+                  >
+                    {t}
+                  </span>
+                ))}
+              </div>
+
+              {/* Action Link */}
+              <div className="mt-10 text-[15px] font-semibold text-[#666] transition-all duration-300 flex items-center gap-2 tracking-wide group-hover:text-[var(--accent)]">
+                {cat.disabled ? 'Coming Soon' : `Open ${cat.label}`} 
+                {!cat.disabled && <span className="group-hover:translate-x-1.5 transition-transform duration-300">→</span>}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
       
     </div>
   );
