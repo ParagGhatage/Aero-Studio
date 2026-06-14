@@ -1,11 +1,11 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useCallback, useRef, useMemo, startTransition } from 'react';
 import { useNavigate, useLocation, useParams, useSearchParams } from 'react-router-dom';
 
 import { useGlobalMedia } from '../../../Context/GlobalMediaContext';
 import { db } from '../../../db';
 import Albums from './Albums';
 
-// Memory-Safe & Render-Optimized Blob Renderer
+// OPTIMIZATION 1: Memory-Safe & Off-Thread Blob Renderer
 const BlobImage = ({ blob, alt, className }) => {
   const imgRef = useRef(null);
 
@@ -20,7 +20,57 @@ const BlobImage = ({ blob, alt, className }) => {
     return <div className={className} style={{ background: '#1F1F1F' }} />;
   }
 
-  return <img ref={imgRef} alt={alt} className={className} />;
+  // Added `loading="lazy"` and `decoding="async"` 
+  // This prevents the browser main thread from freezing when rendering 50+ images at once
+  return <img ref={imgRef} alt={alt} className={className} loading="lazy" decoding="async" />;
+};
+
+// OPTIMIZATION 2: Extracted Card Component
+// Moving hover state here prevents the ENTIRE gallery from re-rendering just because your mouse moved.
+const ImageCard = ({ img, isSelected, isSelectionMode, onClick, onToggleSelect, onDelete }) => {
+  const [isHovered, setIsHovered] = useState(false);
+  const showCheckbox = isSelected || isHovered || isSelectionMode;
+
+  return (
+    <div
+      className={`group relative cursor-pointer rounded-lg overflow-hidden aspect-square bg-[#191919] border p-1 shadow-[0_10px_22px_rgba(0,0,0,0.28)] transition-all duration-150 ${
+        isSelected 
+          ? 'border-white shadow-[0_0_0_2px_#FF5F1F,0_12px_24px_rgba(0,0,0,0.38)] scale-[0.96]' 
+          : 'border-white/90 hover:border-white hover:shadow-[0_12px_26px_rgba(0,0,0,0.36),0_0_0_2px_rgba(255,95,31,0.48)] hover:scale-[1.02]'
+      }`}
+      onClick={() => onClick(img)}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
+      {showCheckbox && (
+        <div
+          className={`absolute top-2 left-2 z-10 w-5.5 h-5.5 rounded border-2 flex items-center justify-center cursor-pointer transition-all duration-200 hover:scale-110 ${
+            isSelected ? 'bg-[#ff5f1f] border-[#ff5f1f]' : 'bg-black/40 border-white/80'
+          }`}
+          onClick={(e) => onToggleSelect(img.id, e)}
+        >
+          {isSelected && <span className="text-white text-sm font-bold leading-none">✓</span>}
+        </div>
+      )}
+      
+      <BlobImage blob={img.fileBlob} alt={img.name} className="w-full h-full object-cover block rounded-sm" />
+      
+      {!isSelected && (
+        <div className="absolute bottom-1 left-1 right-1 pt-4.5 pb-1.75 px-2.25 text-[11px] leading-[1.2] text-[#F5F0EB]/90 whitespace-nowrap overflow-hidden text-ellipsis bg-linear-to-t from-black/80 to-transparent rounded-b-sm">
+          {img.name}
+        </div>
+      )}
+
+      {isHovered && !isSelected && !isSelectionMode && (
+        <button 
+          className="absolute top-1.5 right-1.5 bg-[#0D0D0D]/85 text-[#E24B4A] border border-[#E24B4A]/35 rounded-md w-7 h-7 text-sm cursor-pointer flex items-center justify-center transition-all duration-200 z-10 hover:bg-[#E24B4A] hover:text-white" 
+          onClick={(e) => onDelete(img.id, e)}
+        >
+          ✕
+        </button>
+      )}
+    </div>
+  );
 };
 
 export default function Gallery() {
@@ -72,7 +122,6 @@ export default function Gallery() {
   basePath = basePath.replace(/\/$/, '');
 
   // --- STANDARD STATE ---
-  const [hoveredId, setHoveredId] = useState(null);
   const [selectedImages, setSelectedImages] = useState(new Set());
   const [prevPath, setPrevPath] = useState(location.pathname);
 
@@ -81,9 +130,12 @@ export default function Gallery() {
     setSelectedImages(new Set());
   }
 
-  const displayedImages = currentAlbum 
-    ? allImages.filter(img => img.album === currentAlbum) 
-    : allImages;
+  // OPTIMIZATION 3: Memoize the heavy filtering calculation
+  const displayedImages = useMemo(() => {
+    return currentAlbum 
+      ? allImages.filter(img => img.album === currentAlbum) 
+      : allImages;
+  }, [currentAlbum, allImages]);
   
   const viewingImage = viewId ? allImages.find(img => img.id.toString() === viewId) : null;
 
@@ -111,13 +163,15 @@ export default function Gallery() {
     if (newImages.length > 0) await db.images.bulkAdd(newImages);
   };
 
-  const toggleSelectImage = (id, e) => {
+  const toggleSelectImage = useCallback((id, e) => {
     e.stopPropagation();
-    const next = new Set(selectedImages);
-    if (next.has(id)) next.delete(id);
-    else next.add(id);
-    setSelectedImages(next);
-  };
+    setSelectedImages(prev => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  }, []);
 
   const isAllImagesSelected = displayedImages.length > 0 && selectedImages.size === displayedImages.length;
 
@@ -136,11 +190,11 @@ export default function Gallery() {
     }
   };
 
-  const deleteSingleImage = async (id, e) => {
+  const deleteSingleImage = useCallback(async (id, e) => {
     e.stopPropagation();
     await db.images.delete(id);
-    if (viewingImage && viewingImage.id === id) closeViewer();
-  };
+    if (viewId === id.toString()) closeViewer();
+  }, [viewId, closeViewer]);
 
   const currentIndex = viewingImage ? displayedImages.findIndex(img => img.id === viewingImage.id) : -1;
   const hasPrev = currentIndex > 0;
@@ -172,7 +226,7 @@ export default function Gallery() {
     processFiles(e.dataTransfer.files, currentAlbum || 'Default');
   };
 
-  const handleImageClick = (img) => {
+  const handleImageClick = useCallback((img) => {
     if (selectedImages.size > 0) {
       toggleSelectImage(img.id, { stopPropagation: () => {} });
       return;
@@ -188,57 +242,20 @@ export default function Gallery() {
         setInfoImage(prev => prev?.id === img.id ? null : img);
       }, 250);
     }
+  }, [selectedImages.size, openViewer, toggleSelectImage]);
+
+  // Tab navigation helpers with Concurrent React rendering to prevent frozen tabs
+  const navigateToPhotos = () => {
+    setInfoImage(null);
+    startTransition(() => navigate(basePath));
   };
 
-  const renderImageGridItem = (img) => {
-    const isSelected = selectedImages.has(img.id);
-    const showCheckbox = isSelected || hoveredId === img.id || selectedImages.size > 0;
-
-    return (
-      <div
-        key={img.id}
-        className={`group relative cursor-pointer rounded-lg overflow-hidden aspect-square bg-[#191919] border p-1 shadow-[0_10px_22px_rgba(0,0,0,0.28)] transition-all duration-150 ${
-          isSelected 
-            ? 'border-white shadow-[0_0_0_2px_#FF5F1F,0_12px_24px_rgba(0,0,0,0.38)] scale-[0.96]' 
-            : 'border-white/90 hover:border-white hover:shadow-[0_12px_26px_rgba(0,0,0,0.36),0_0_0_2px_rgba(255,95,31,0.48)] hover:scale-[1.02]'
-        }`}
-        onClick={() => handleImageClick(img)}
-        onMouseEnter={() => setHoveredId(img.id)}
-        onMouseLeave={() => setHoveredId(null)}
-      >
-        {showCheckbox && (
-          <div
-            className={`absolute top-2 left-2 z-10 w-5.5 h-5.5 rounded border-2 flex items-center justify-center cursor-pointer transition-all duration-200 hover:scale-110 ${
-              isSelected ? 'bg-[#ff5f1f] border-[#ff5f1f]' : 'bg-black/40 border-white/80'
-            }`}
-            onClick={(e) => toggleSelectImage(img.id, e)}
-          >
-            {isSelected && <span className="text-white text-sm font-bold leading-none">✓</span>}
-          </div>
-        )}
-        
-        <BlobImage blob={img.fileBlob} alt={img.name} className="w-full h-full object-cover block rounded-sm" />
-        
-        {!isSelected && (
-          <div className="absolute bottom-1 left-1 right-1 pt-4.5 pb-1.75 px-2.25 text-[11px] leading-[1.2] text-[#F5F0EB]/90 whitespace-nowrap overflow-hidden text-ellipsis bg-linear-to-t from-black/80 to-transparent rounded-b-sm">
-            {img.name}
-          </div>
-        )}
-
-        {hoveredId === img.id && !isSelected && selectedImages.size === 0 && (
-          <button 
-            className="absolute top-1.5 right-1.5 bg-[#0D0D0D]/85 text-[#E24B4A] border border-[#E24B4A]/35 rounded-md w-7 h-7 text-sm cursor-pointer flex items-center justify-center transition-all duration-200 z-10 hover:bg-[#E24B4A] hover:text-white" 
-            onClick={(e) => deleteSingleImage(img.id, e)}
-          >
-            ✕
-          </button>
-        )}
-      </div>
-    );
+  const navigateToAlbums = () => {
+    setInfoImage(null);
+    startTransition(() => navigate(`${basePath}/albums`));
   };
 
   return (
-    // Outer App Container - No dynamic padding here anymore!
     <div 
       className="h-dvh bg-[#0d0d0d] text-[#f5f0eb] flex flex-col font-sans overflow-hidden" 
       onDragOver={(e) => e.preventDefault()} 
@@ -246,26 +263,24 @@ export default function Gallery() {
     >
       
       <header className="flex items-center justify-between p-3 sm:p-4 shrink-0 border-b border-[#222] gap-2">
-        {/* Left Side: Back button + Title */}
-<div className="flex items-center gap-2 sm:gap-3 flex-1 min-w-0">
-  <button 
-    className="bg-transparent border-none text-[#f5f0eb] cursor-pointer hover:text-[#ff5f1f] transition-colors p-1 flex items-center justify-center shrink-0" 
-    onClick={() => navigate('/images')}
-  >
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="m15 18-6-6 6-6"/></svg>
-  </button>
-  
-  {/* FIX: Added leading-normal and py-1 to prevent the text from being horizontally sliced */}
-  <h1 className="text-[18px] lg:text-[24px] font-medium m-0 leading-normal py-1 truncate">
-    {currentAlbum ? currentAlbum : (activeTab === 'albums' ? 'Albums' : 'My Photos')}
-  </h1>
-  
-  {!currentAlbum && (
-    <span className="text-[#555] text-[13px] ml-2 hidden md:inline shrink-0">
-      {allImages.length} image{allImages.length !== 1 ? 's' : ''} stored locally
-    </span>
-  )}
-</div>
+        <div className="flex items-center gap-2 sm:gap-3 flex-1 min-w-0">
+          <button 
+            className="bg-transparent border-none text-[#f5f0eb] cursor-pointer hover:text-[#ff5f1f] transition-colors p-1 flex items-center justify-center shrink-0" 
+            onClick={() => navigate('/images')}
+          >
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="m15 18-6-6 6-6"/></svg>
+          </button>
+          
+          <h1 className="text-[18px] lg:text-[24px] font-medium m-0 leading-normal py-1 truncate">
+            {currentAlbum ? currentAlbum : (activeTab === 'albums' ? 'Albums' : 'My Photos')}
+          </h1>
+          
+          {!currentAlbum && (
+            <span className="text-[#555] text-[13px] ml-2 hidden md:inline shrink-0">
+              {allImages.length} image{allImages.length !== 1 ? 's' : ''} stored locally
+            </span>
+          )}
+        </div>
 
         <div className="flex items-center gap-3 shrink-0">
           {!currentAlbum ? (
@@ -274,7 +289,7 @@ export default function Gallery() {
                 className={`px-3 sm:px-4 py-1.5 rounded-md text-[12px] sm:text-[13px] font-medium transition-colors cursor-pointer border-none ${
                   activeTab === 'photos' ? 'bg-[#ff5f1f]/10 text-[#ff5f1f]' : 'bg-transparent text-[#888] hover:text-[#f5f0eb]'
                 }`}
-                onClick={() => { setInfoImage(null); navigate(basePath); }}
+                onClick={navigateToPhotos}
               >
                 Photos
               </button>
@@ -282,7 +297,7 @@ export default function Gallery() {
                 className={`px-3 sm:px-4 py-1.5 rounded-md text-[12px] sm:text-[13px] font-medium transition-colors cursor-pointer border-none ${
                   activeTab === 'albums' ? 'bg-[#ff5f1f]/10 text-[#ff5f1f]' : 'bg-transparent text-[#888] hover:text-[#f5f0eb]'
                 }`}
-                onClick={() => { setInfoImage(null); navigate(`${basePath}/albums`); }}
+                onClick={navigateToAlbums}
               >
                 Albums
               </button>
@@ -290,7 +305,7 @@ export default function Gallery() {
           ) : (
             <button 
               className="text-[13px] font-medium text-[#888] hover:text-white transition-colors px-3 py-1.5 rounded-lg border border-[#333] hover:border-[#555] bg-transparent cursor-pointer"
-              onClick={() => { setInfoImage(null); navigate(`${basePath}/albums`); }}
+              onClick={navigateToAlbums}
             >
               ← Back
             </button>
@@ -307,17 +322,17 @@ export default function Gallery() {
         onChange={(e) => processFiles(e.target.files, currentAlbum || 'Default')}
       />
 
-      {/* MAIN WORKSPACE SCROLL CONTAINER - Padding adjusts dynamically based on the Drawer */}
       <div className={`flex-1 overflow-y-auto p-4 lg:p-6 min-h-0 transition-all duration-200 ${
         infoImage ? 'lg:pr-[324px] pb-[410px] lg:pb-6' : ''
       }`}>
         
         {activeTab === 'albums' && !currentAlbum && (
-          <Albums onSelectAlbum={(albumName) => navigate(`${basePath}/albums/${encodeURIComponent(albumName)}`)} />
+          <Albums onSelectAlbum={(albumName) => {
+            startTransition(() => navigate(`${basePath}/albums/${encodeURIComponent(albumName)}`));
+          }} />
         )}
 
         {currentAlbum && (
-          // Removed h-full min-h-0 to let grid expand naturally
           <div className="flex flex-col gap-4">
             {displayedImages.length > 0 && (
               <div className="flex justify-start items-center shrink-0">
@@ -341,13 +356,22 @@ export default function Gallery() {
                 <div className="text-[30px] mb-2 leading-none">+</div>
                 <div className="text-xs font-semibold text-[#888]">Add Photos</div>
               </div>
-              {displayedImages.map(renderImageGridItem)}
+              {displayedImages.map(img => (
+                <ImageCard
+                  key={img.id}
+                  img={img}
+                  isSelected={selectedImages.has(img.id)}
+                  isSelectionMode={selectedImages.size > 0}
+                  onClick={handleImageClick}
+                  onToggleSelect={toggleSelectImage}
+                  onDelete={deleteSingleImage}
+                />
+              ))}
             </div>
           </div>
         )}
 
         {activeTab === 'photos' && !currentAlbum && (
-          // Removed h-full min-h-0 to let grid expand naturally
           <div className="flex flex-col gap-4">
             {allImages.length > 0 && (
               <div className="flex justify-start items-center shrink-0">
@@ -373,7 +397,17 @@ export default function Gallery() {
                 <div className="text-[30px] mb-2 leading-none">+</div>
                 <div className="text-xs font-semibold text-[#888]">Add Photos</div>
               </div>
-              {allImages.map(renderImageGridItem)}
+              {allImages.map(img => (
+                <ImageCard
+                  key={img.id}
+                  img={img}
+                  isSelected={selectedImages.has(img.id)}
+                  isSelectionMode={selectedImages.size > 0}
+                  onClick={handleImageClick}
+                  onToggleSelect={toggleSelectImage}
+                  onDelete={deleteSingleImage}
+                />
+              ))}
             </div>
           </div>
         )}
