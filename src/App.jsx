@@ -1,25 +1,27 @@
-import { useEffect } from 'react';
-import { RouterProvider } from 'react-router-dom';
-import { router } from './routes';
+import { useEffect } from "react";
+import { RouterProvider } from "react-router-dom";
+import { router } from "./routes";
 
-import { GlobalMediaProvider } from './Context/GlbalMediaProvider';
+import { GlobalMediaProvider } from "./Context/GlbalMediaProvider";
 
 export default function App() {
-  
   // PWA Background Auto-Updater
   useEffect(() => {
     const handleVisibilityChange = () => {
-      if (document.visibilityState === 'visible' && 'serviceWorker' in navigator) {
+      if (
+        document.visibilityState === "visible" &&
+        "serviceWorker" in navigator
+      ) {
         navigator.serviceWorker.ready.then((registration) => {
           registration.update();
         });
       }
     };
 
-    document.addEventListener('visibilitychange', handleVisibilityChange);
+    document.addEventListener("visibilitychange", handleVisibilityChange);
 
     let refreshing = false;
-    navigator.serviceWorker?.addEventListener('controllerchange', () => {
+    navigator.serviceWorker?.addEventListener("controllerchange", () => {
       if (!refreshing) {
         refreshing = true;
         window.location.reload();
@@ -27,7 +29,7 @@ export default function App() {
     });
 
     return () => {
-      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
     };
   }, []);
 

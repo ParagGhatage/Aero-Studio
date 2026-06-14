@@ -1,13 +1,13 @@
-import { useState } from 'react';
-import { Link, NavLink, useNavigate } from 'react-router-dom';
+import { useState } from "react";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 
-const GITHUB_URL = 'https://github.com/ParagGhatage/Aero-Studio';
+const GITHUB_URL = "https://github.com/ParagGhatage/Aero-Studio";
 
 const NAV_TABS = [
-  { label: 'Features', path: '/features' },
-  { label: 'About', path: '/about' },
-  { label: 'Privacy', path: '/privacy' },
-  { label: 'Docs', path: '/docs' },
+  { label: "Features", path: "/features" },
+  { label: "About", path: "/about" },
+  { label: "Privacy", path: "/privacy" },
+  { label: "Docs", path: "/docs" },
 ];
 
 const GitHubIcon = () => (
@@ -22,10 +22,9 @@ export default function AeroTopBar() {
 
   return (
     <nav className="sticky top-0 z-50 h-17.5 flex items-center justify-between px-6 md:px-14 border-b border-aero-border bg-black/90 backdrop-blur-md">
-      
       {/* Brand Logo */}
-      <Link 
-        to="/" 
+      <Link
+        to="/"
         onClick={() => setIsMobileMenuOpen(false)}
         className="flex items-center gap-3 no-underline shrink-0"
       >
@@ -38,14 +37,15 @@ export default function AeroTopBar() {
       {/* Desktop Tabs (Hidden on mobile) */}
       <div className="hidden md:flex items-center">
         {NAV_TABS.map(({ label, path }) => (
-          <NavLink 
-            key={path} 
-            to={path} 
+          <NavLink
+            key={path}
+            to={path}
             className={({ isActive }) => `
               flex items-center px-5 h-17.5 text-[15px] cursor-pointer font-display font-medium no-underline transition-all duration-200 border-b-2
-              ${isActive 
-                ? 'text-aero-accent border-aero-accent' 
-                : 'text-aero-text-dim border-transparent hover:text-aero-text'
+              ${
+                isActive
+                  ? "text-aero-accent border-aero-accent"
+                  : "text-aero-text-dim border-transparent hover:text-aero-text"
               }
             `}
           >
@@ -56,8 +56,10 @@ export default function AeroTopBar() {
 
       {/* Desktop Action Buttons (Hidden on mobile) */}
       <div className="hidden md:flex items-center gap-4.5 shrink-0">
-        <button 
-          onClick={() => window.open(GITHUB_URL, '_blank', 'noopener,noreferrer')} 
+        <button
+          onClick={() =>
+            window.open(GITHUB_URL, "_blank", "noopener,noreferrer")
+          }
           className="bg-transparent border-none cursor-pointer text-aero-text-sub px-2 transition-colors duration-200 hover:text-aero-text"
         >
           <GitHubIcon />
@@ -66,17 +68,32 @@ export default function AeroTopBar() {
       </div>
 
       {/* Mobile Menu Toggle Button */}
-      <button 
+      <button
         className="md:hidden flex items-center justify-center p-2 text-aero-text-sub hover:text-aero-text transition-colors"
         onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
       >
-        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg
+          className="w-6 h-6"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
           {isMobileMenuOpen ? (
             /* Close "X" Icon */
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M6 18L18 6M6 6l12 12"
+            />
           ) : (
             /* Hamburger Icon */
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M4 6h16M4 12h16M4 18h16"
+            />
           )}
         </svg>
       </button>
@@ -84,18 +101,18 @@ export default function AeroTopBar() {
       {/* Mobile Dropdown Menu */}
       {isMobileMenuOpen && (
         <div className="absolute top-17.5 left-0 w-full bg-aero-surface border-b border-aero-border flex flex-col md:hidden px-6 py-6 shadow-2xl gap-4">
-          
           <div className="flex flex-col gap-2">
             {NAV_TABS.map(({ label, path }) => (
-              <NavLink 
-                key={path} 
-                to={path} 
+              <NavLink
+                key={path}
+                to={path}
                 onClick={() => setIsMobileMenuOpen(false)}
                 className={({ isActive }) => `
                   px-4 py-3 text-[15px] rounded-md font-display font-medium no-underline transition-all duration-200
-                  ${isActive 
-                    ? 'text-aero-accent bg-aero-accent-glow border border-aero-accent-border' 
-                    : 'text-aero-text-dim hover:text-aero-text hover:bg-aero-border-emphasis'
+                  ${
+                    isActive
+                      ? "text-aero-accent bg-aero-accent-glow border border-aero-accent-border"
+                      : "text-aero-text-dim hover:text-aero-text hover:bg-aero-border-emphasis"
                   }
                 `}
               >
@@ -107,22 +124,21 @@ export default function AeroTopBar() {
           <div className="h-px bg-aero-border w-full my-2" />
 
           <div className="flex items-center justify-between px-2">
-            <button 
+            <button
               onClick={() => {
-                window.open(GITHUB_URL, '_blank', 'noopener,noreferrer');
+                window.open(GITHUB_URL, "_blank", "noopener,noreferrer");
                 setIsMobileMenuOpen(false);
-              }} 
+              }}
               className="flex items-center gap-2 bg-transparent border-none cursor-pointer text-aero-text-sub transition-colors duration-200 hover:text-aero-text"
             >
               <GitHubIcon />
               <span className="font-display text-sm font-medium">GitHub</span>
             </button>
-            <NavCTA 
-              navigate={navigate} 
-              onClick={() => setIsMobileMenuOpen(false)} 
+            <NavCTA
+              navigate={navigate}
+              onClick={() => setIsMobileMenuOpen(false)}
             />
           </div>
-          
         </div>
       )}
     </nav>
@@ -131,11 +147,11 @@ export default function AeroTopBar() {
 
 function NavCTA({ navigate, onClick }) {
   return (
-    <button 
+    <button
       onClick={() => {
-        navigate('/app');
+        navigate("/app");
         if (onClick) onClick(); // Close menu on click for mobile
-      }} 
+      }}
       className="bg-aero-accent hover:bg-aero-accent-hover border-none px-6.5 py-2.5 rounded-md text-black font-display font-bold text-[15px] cursor-pointer transition-all duration-200 hover:-translate-y-px"
     >
       Get Started

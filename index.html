@@ -3,10 +3,79 @@
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="google-site-verification" content="MhNgPVM5I2u_stINzPsq3oCpcz6F1uVZ_7PWTEIEQvA" />
+
+    <title>Aero Studio | Local-First Multimedia Workspace</title>
+    <meta
+      name="description"
+      content="A local-first toolbox for images, documents, and video. Zero uploads. Zero tracking. Your files never leave your device."
+    />
+
+    <meta
+      property="og:title"
+      content="Aero Studio | Local-First Multimedia Workspace"
+    />
+    <meta
+      property="og:description"
+      content="Organize, view, and edit your photos and PDFs completely offline in your browser."
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://aerostudio.xyz/" />
+    <meta
+      property="og:image"
+      content="https://aerostudio.xyz/social-preview.png"
+    />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Aero Studio" />
+    <meta
+      name="twitter:description"
+      content="A local-first toolbox for images, documents, and video. Zero uploads. Zero tracking."
+    />
+    <meta
+      name="twitter:image"
+      content="https://aerostudio.xyz/social-preview.png"
+    />
+
+    <meta
+      name="google-site-verification"
+      content="MhNgPVM5I2u_stINzPsq3oCpcz6F1uVZ_7PWTEIEQvA"
+    />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>aero</title>
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "Organization",
+          "@id": "https://aerostudio.xyz/#organization",
+          "name": "Aero Studio",
+          "url": "https://aerostudio.xyz/",
+          "logo": "https://aerostudio.xyz/square-image_512.png"
+        },
+        {
+          "@type": "WebApplication",
+          "@id": "https://aerostudio.xyz/#application",
+          "name": "Aero Studio",
+          "url": "https://aerostudio.xyz/",
+          "description": "A local-first multimedia workspace for images, documents, and video. Zero uploads, zero tracking.",
+          "applicationCategory": "MultimediaApplication",
+          "operatingSystem": "Any",
+          "browserRequirements": "Requires a modern web browser.",
+          "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD"
+          },
+          "creator": {
+            "@id": "https://aerostudio.xyz/#organization"
+          }
+        }
+      ]
+    }
+  </script> 
   </head>
+
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
