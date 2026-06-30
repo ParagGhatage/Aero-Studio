@@ -26,7 +26,16 @@ export default defineConfig({
         // This MUST be inside the workbox object
         navigateFallbackDenylist: [
           /^\/sitemap\.xml$/, 
-          /^\/robots\.txt$/
+          /^\/robots\.txt$/,
+          // Exclude prerendered SEO pages so crawlers get static HTML
+          /^\/features$/,
+          /^\/about$/,
+          /^\/privacy$/,
+          /^\/docs$/,
+          /^\/images$/,
+          /^\/images\/compress$/,
+          /^\/images\/crop$/,
+          /^\/images\/gallery$/,
         ],
 
         // Runtime caching for external Google Fonts

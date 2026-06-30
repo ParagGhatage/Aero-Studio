@@ -163,6 +163,7 @@ export default function AppDashboard() {
       <Helmet>
   <title>Multimedia Workspace Dashboard | Aero Studio</title>
   <meta name="description" content="Access your local-first multimedia tools. Compress, crop, and manage your files securely in your browser with zero uploads." />
+  <meta name="robots" content="noindex, nofollow" />
   <link rel="canonical" href="https://aerostudio.xyz/app" />
   
   {/* Fall back to your main social preview image */}

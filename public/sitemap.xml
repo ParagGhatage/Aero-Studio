@@ -1,63 +1,60 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <!-- Marketing / Landing Pages -->
   <url>
     <loc>https://aerostudio.xyz/</loc>
-    <lastmod>2026-06-14T23:19:21.930Z</lastmod>
-    <changefreq>daily</changefreq>
+    <lastmod>2026-06-30T00:00:00.000Z</lastmod>
+    <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
     <loc>https://aerostudio.xyz/features</loc>
-    <lastmod>2026-06-14T23:19:21.930Z</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>1.0</priority>
+    <lastmod>2026-06-30T00:00:00.000Z</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://aerostudio.xyz/about</loc>
-    <lastmod>2026-06-14T23:19:21.930Z</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>1.0</priority>
+    <lastmod>2026-06-30T00:00:00.000Z</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
   </url>
   <url>
     <loc>https://aerostudio.xyz/privacy</loc>
-    <lastmod>2026-06-14T23:19:21.930Z</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>1.0</priority>
+    <lastmod>2026-06-30T00:00:00.000Z</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.4</priority>
   </url>
   <url>
     <loc>https://aerostudio.xyz/docs</loc>
-    <lastmod>2026-06-14T23:19:21.930Z</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>1.0</priority>
+    <lastmod>2026-06-30T00:00:00.000Z</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
   </url>
-  <url>
-    <loc>https://aerostudio.xyz/app</loc>
-    <lastmod>2026-06-14T23:19:21.930Z</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>1.0</priority>
-  </url>
+
+  <!-- SEO-Valuable Tool Pages -->
   <url>
     <loc>https://aerostudio.xyz/images</loc>
-    <lastmod>2026-06-14T23:19:21.930Z</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>1.0</priority>
-  </url>
-  <url>
-    <loc>https://aerostudio.xyz/images/gallery/albums</loc>
-    <lastmod>2026-06-14T23:19:21.930Z</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>1.0</priority>
-  </url>
-  <url>
-    <loc>https://aerostudio.xyz/images/crop</loc>
-    <lastmod>2026-06-14T23:19:21.930Z</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>1.0</priority>
+    <lastmod>2026-06-30T00:00:00.000Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
   </url>
   <url>
     <loc>https://aerostudio.xyz/images/compress</loc>
-    <lastmod>2026-06-14T23:19:21.930Z</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>1.0</priority>
+    <lastmod>2026-06-30T00:00:00.000Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://aerostudio.xyz/images/crop</loc>
+    <lastmod>2026-06-30T00:00:00.000Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://aerostudio.xyz/images/gallery</loc>
+    <lastmod>2026-06-30T00:00:00.000Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
   </url>
 </urlset>

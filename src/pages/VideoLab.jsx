@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import { Helmet } from "react-helmet-async";
 
 const TOOLS = [
   {
@@ -204,6 +205,10 @@ export default function VideosHub() {
 
   return (
     <div className="bg-[#0D0D0D] min-h-dvh font-body text-[#F5F0EB] px-6 py-8 md:px-10">
+      <Helmet>
+        <meta name="robots" content="noindex, nofollow" />
+        <title>Video Tools | Aero Studio</title>
+      </Helmet>
       {/* Top Navigation */}
       <div className="flex items-center gap-3 mb-10">
         <button
